@@ -11,7 +11,7 @@ import {matchProviders} from "./core/match.js";
 import {simulateConcierge} from "./core/simulation.js";
 import {nextRequestState} from "./core/request-flow.js";
 import {validateProvider} from "./core/provider-onboarding.js";
-import {createService,isAvailable} from "./core/services.js";
+import {createService,isAvailable,checkRequirements} from "./core/services.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
