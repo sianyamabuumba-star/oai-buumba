@@ -6,6 +6,7 @@ import {JsonStore} from "../core/store.js";
 import {createTask,runTask} from "../core/tasks.js";
 import {adapters} from "../core/adapters.js";
 import {classify,extractRequirements} from "../core/router.js";
+import {matchProviders} from "../core/match.js";
 
 const dir=await fs.mkdtemp(path.join(os.tmpdir(),"obuumba-"));
 const taskStore=new JsonStore(path.join(dir,"tasks.json"));
@@ -21,6 +22,10 @@ assert.deepEqual(req.dateHints,["tomorrow"]);
 assert.equal(req.location,"Livingstone");
 assert.equal(req.partySize,4);
 assert.deepEqual(req.budgetHints,["K500"]);
+
+const providerFile=new URL("../data/providers.json",import.meta.url);
+const matches=await matchProviders(providerFile,["transport"],req);
+assert.deepEqual(matches,[]);
 
 const task=await createTask(taskStore,{domain:"concierge",goal:"Route airport pickup",actions:[{adapter:"local",action:"classify_request",payload:{message:"airport pickup"}}]});
 const done=await runTask(taskStore,audit,adapters,task);
