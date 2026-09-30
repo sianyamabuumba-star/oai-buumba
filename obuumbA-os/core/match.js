@@ -16,7 +16,7 @@ export async function matchProviders(providerFile,intents,requirements={}){
   const providers=await import(providerFile,{with:{type:"json"}});
   const list=providers.default||providers;
   return list
-    .filter(p=>p.verified===true)
+    .filter(p=>p.verified===true && p.verification?.status==="VERIFIED")
     .map(p=>({...p,matchScore:scoreProvider(p,intents,requirements)}))
     .filter(p=>p.matchScore>25)
     .sort((a,b)=>b.matchScore-a.matchScore);
