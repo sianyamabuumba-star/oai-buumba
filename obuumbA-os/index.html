@@ -2,24 +2,32 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>O'BUUMBA OS</title>
 <style>
-body{margin:0;background:#08070d;color:#f5f1e8;font:15px system-ui}main{max-width:1150px;margin:auto;padding:28px}.gold{color:#d7b45a}.muted{color:#9d98a8}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.c{background:#14111c;border:1px solid #30283d;border-radius:14px;padding:18px}.bar{display:flex;gap:8px;flex-wrap:wrap}.pill{padding:6px 10px;border:1px solid #30283d;border-radius:99px}.ok{border-color:#496a52}.warn{border-color:#806b38}input{box-sizing:border-box;background:#0e0c13;color:white;border:1px solid #30283d;padding:12px;border-radius:8px;flex:1;min-width:220px}button{background:#d7b45a;border:0;border-radius:8px;padding:11px 15px;font-weight:800;cursor:pointer}.req{border-top:1px solid #30283d;padding:10px 0}.small{font-size:12px}
+body{margin:0;background:#08070d;color:#f5f1e8;font:15px system-ui}main{max-width:1180px;margin:auto;padding:28px}.gold{color:#d7b45a}.muted{color:#9d98a8}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.c{background:#14111c;border:1px solid #30283d;border-radius:14px;padding:18px}.bar{display:flex;gap:8px;flex-wrap:wrap}.pill{padding:6px 10px;border:1px solid #30283d;border-radius:99px}.ok{border-color:#496a52}.warn{border-color:#806b38}.bad{border-color:#7a4141}input{box-sizing:border-box;background:#0e0c13;color:white;border:1px solid #30283d;padding:12px;border-radius:8px;flex:1;min-width:220px}button{background:#d7b45a;border:0;border-radius:8px;padding:11px 15px;font-weight:800;cursor:pointer}.req{border-top:1px solid #30283d;padding:10px 0}.small{font-size:12px}.status{display:inline-block;padding:3px 7px;border-radius:8px;border:1px solid #30283d;font-size:12px}.owner{border-left:3px solid #d7b45a;padding-left:10px}.list{max-height:280px;overflow:auto}
 </style></head><body><main>
-<h1 class="gold">O'BUUMBA OS</h1><p class="muted">FIND → ARRANGE → DO • Livingstone → Zambia → Africa → World</p>
-<div class="bar"><span class="pill ok" id="health">API checking…</span><span class="pill warn">WhatsApp: NOT CONNECTED</span><span class="pill warn">Payments: NOT CONNECTED</span><span class="pill warn">Live availability: NOT CONNECTED</span></div>
+<h1 class="gold">O'BUUMBA OS</h1><p class="muted">FIND → ARRANGE → DO • CAPTURE → UNDERSTAND → PLAN → EXECUTE → VERIFY → LOG → IMPROVE</p>
+<div class="bar" id="system"></div>
 <br><div class="g">
-<section class="c"><h2>Universal Concierge</h2><p class="muted">Send a request through the same API that future WhatsApp messages will use.</p>
+<section class="c"><h2>Universal Concierge</h2><p class="muted">Every request enters the same orchestration core. No fabricated availability, bookings or payments.</p>
 <div class="bar"><input id="q" placeholder="Need airport pickup tonight"><button onclick="route()">Route</button></div><div id="out"></div></section>
-<section class="c"><h2>Providers</h2><p id="providers" class="muted">Loading demo directory…</p><div class="small muted">Demo providers are placeholders until verified. The system must never claim live availability.</div></section>
-<section class="c"><h2>Creator Studio</h2><p class="muted">TUKWELA • WHO THE BEST? • L’Stone Ku Chalo • O’BUUMBA AI Studio</p></section>
-<section class="c"><h2>Business</h2><p class="muted">Requests → Matches → Arrangements → Transactions</p></section>
+<section class="c"><h2>Owner Cockpit</h2><div id="owner" class="muted">Loading system state…</div></section>
+<section class="c"><h2>Providers</h2><p id="providers" class="muted">Loading demo directory…</p><div class="small muted">Only verified providers can become live matches. Current directory entries are demo placeholders.</div></section>
+<section class="c"><h2>Creator Studio</h2><p class="muted">TUKWELA • WHO THE BEST? • L’Stone Ku Chalo • O’BUUMBA AI Studio</p><div class="small muted">Projects can later become autonomous tasks through the same engine.</div></section>
+<section class="c"><h2>Business</h2><p class="muted">Requests → Matches → Arrangements → Transactions</p><div class="small muted">Payments and external transactions remain blocked until explicitly connected.</div></section>
 </div>
-<section class="c" style="margin-top:14px"><h2>Request Queue</h2><div id="queue" class="muted">No requests yet.</div></section>
-<p class="muted small">MVP: storage is in-memory. No real bookings, payments, WhatsApp messages, provider availability or customer notifications are claimed.</p>
+<section class="c" style="margin-top:14px"><h2>Task Queue</h2><div id="tasks" class="list muted">No tasks yet.</div></section>
+<section class="c" style="margin-top:14px"><h2>Request Queue</h2><div id="queue" class="list muted">No requests yet.</div></section>
+<section class="c" style="margin-top:14px"><h2>Audit Trail</h2><div id="audit" class="list muted">No events yet.</div></section>
+<p class="muted small">Current runtime: persistent local JSON. External adapters are intentionally BLOCKED until connected. This prevents the system from pretending that a live service exists when it does not.</p>
 <script>
+const $=id=>document.getElementById(id);
 async function api(path,opt){const r=await fetch(path,opt);if(!r.ok)throw new Error(await r.text());return r.json()}
-async function boot(){try{await api('/api/health');health.textContent='API: ONLINE';health.className='pill ok'}catch(e){health.textContent='API: OFFLINE';health.className='pill warn'};try{const p=await fetch('data/providers.json').then(r=>r.json());providers.textContent=p.length+' demo providers loaded: '+p.map(x=>x.category).join(' • ')}catch(e){};load()}
-async function route(){const message=q.value.trim();if(!message)return;out.innerHTML='<p class="muted">Routing…</p>';try{const r=await api('/api/requests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message})});out.innerHTML='<p><b>Detected:</b> '+r.intents.join(' + ')+'<br><span class="muted">Request '+r.id.slice(0,8)+' • '+r.status+'</span></p>';load()}catch(e){out.textContent='API unavailable. Start the server or use the static demo.'}}
-async function load(){try{const rs=await api('/api/requests');queue.innerHTML=rs.length?rs.slice(0,8).map(r=>'<div class="req"><b>'+r.intents.join(' + ')+'</b> — '+escapeHtml(r.message)+'<br><span class="muted small">'+r.status+' • '+new Date(r.createdAt).toLocaleString()+'</span></div>').join(''):'No requests yet.'}catch(e){}}
-function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function pill(x){return '<span class="pill '+(x.status==="READY"||x.status==="DONE"?'ok':'warn')+'">'+esc(x.name||x.service)+': '+esc(x.status)+'</span>'}
+async function boot(){try{const s=await api('/api/system/status');$("system").innerHTML=s.adapters.map(pill).join("");$("owner").innerHTML='<div class="owner"><b>Owner action required only for:</b><br>'+s.adapters.filter(x=>x.status==="BLOCKED").map(x=>esc(x.reason)).join("<br>")+'</div>'}catch(e){$("system").innerHTML='<span class="pill bad">API: OFFLINE</span>'}
+try{const p=await fetch('data/providers.json').then(r=>r.json());$("providers").textContent=p.length+" demo providers loaded • "+p.map(x=>x.category).join(" • ")}catch(e){}
+await load()
+setInterval(load,5000)}
+async function route(){const message=$("q").value.trim();if(!message)return;$("out").innerHTML='<p class="muted">Routing + logging…</p>';try{const r=await api('/api/requests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message})});$("out").innerHTML='<p><b>Detected:</b> '+r.intents.join(" + ")+'<br><b>Task:</b> '+r.taskId.slice(0,8)+' • '+r.status+'<br><span class="muted">Requirements extracted without claiming availability.</span></p>';$("q").value="";await load()}catch(e){$("out").textContent='API unavailable. Start the server.'}}
+async function load(){try{const [rs,ts,au]=await Promise.all([api('/api/requests'),api('/api/tasks'),api('/api/audit')]);$("queue").innerHTML=rs.length?rs.slice(0,10).map(r=>'<div class="req"><b>'+esc(r.intents.join(" + "))+'</b> — '+esc(r.message)+'<br><span class="status">'+esc(r.status)+'</span> <span class="muted small">'+new Date(r.createdAt).toLocaleString()+'</span></div>').join(""):"No requests yet.";$("tasks").innerHTML=ts.length?ts.slice(0,10).map(t=>'<div class="req"><b>'+esc(t.domain)+'</b> — '+esc(t.goal)+'<br><span class="status">'+esc(t.status)+'</span> <span class="muted small">'+esc(t.id.slice(0,8))+'</span></div>').join(""):"No tasks yet.";$("audit").innerHTML=au.length?au.slice(0,12).map(a=>'<div class="req"><b>'+esc(a.type)+'</b> — <span class="muted small">'+new Date(a.createdAt).toLocaleString()+'</span></div>').join(""):"No events yet."}catch(e){}}
 boot();
 </script></main></body></html>
