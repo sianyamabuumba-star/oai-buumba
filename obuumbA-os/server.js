@@ -9,6 +9,7 @@ import {createTask,runTask,retryTask} from "./core/tasks.js";
 import {classify,extractRequirements} from "./core/router.js";
 import {matchProviders} from "./core/match.js";
 import {simulateConcierge} from "./core/simulation.js";
+import {nextRequestState} from "./core/request-flow.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
@@ -73,7 +74,12 @@ app.patch("/api/requests/:id",async(req,res)=>{
   if(!current)return res.status(404).json({error:"not found"});
   const allowed=["NEW","MATCHING","AWAITING_CONFIRMATION","CONFIRMED","IN_PROGRESS","COMPLETED","NEEDS_HUMAN","CANCELLED","FAILED"];
   if(req.body.status && !allowed.includes(req.body.status))return res.status(400).json({error:"invalid status"});
-  const updated=await requestStore.update(req.params.id,{status:req.body.status||current.status});
+  let nextStatus=req.body.status||current.status;
+  if(req.body.action){
+    try{nextStatus=nextRequestState(current,req.body.action);}
+    catch(e){return res.status(409).json({error:e.message});}
+  }
+  const updated=await requestStore.update(req.params.id,{status:nextStatus});
   await audit({type:"request.updated",requestId:updated.id,status:updated.status});
   res.json(updated);
 });
