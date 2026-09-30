@@ -9,6 +9,7 @@ import {classify,extractRequirements} from "../core/router.js";
 import {simulateConcierge} from "../core/simulation.js";
 import {canTransition} from "../core/request-flow.js";
 import {validateProvider} from "../core/provider-onboarding.js";
+import {createService,isAvailable} from "../core/services.js";
 import {matchProviders} from "../core/match.js";
 
 const dir=await fs.mkdtemp(path.join(os.tmpdir(),"obuumba-"));
@@ -42,6 +43,11 @@ const provider=validateProvider({name:"Test Transfer",category:"Transport",verif
 assert.equal(provider.verified,true);
 assert.equal(provider.verification.status,"VERIFIED");
 assert.throws(()=>validateProvider({name:"Bad",category:"Transport",verification:{status:"UNKNOWN"}}));
+
+const service=createService({providerId:provider.id,name:"Airport Pickup",tags:["airport pickup"],availability:{mode:"SCHEDULED",rules:[{day:"wed",start:"06:00",end:"22:00"}]}});
+assert.equal(service.providerId,provider.id);
+assert.equal(isAvailable(service,"2026-09-30T19:00:00").status,"AVAILABLE");
+assert.equal(isAvailable(service,"2026-10-01T19:00:00").status,"UNAVAILABLE");
 
 const task=await createTask(taskStore,{domain:"concierge",goal:"Route airport pickup",actions:[{adapter:"local",action:"classify_request",payload:{message:"airport pickup"}}]});
 const done=await runTask(taskStore,audit,adapters,task);
