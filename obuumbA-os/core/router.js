@@ -5,7 +5,7 @@ const rules=[
 ["food",/food|restaurant|meal|eat|catering/i],
 ["shopping",/shop|buy|store|shopping/i],
 ["creative_design",/logo|design|brand|poster|music|video|art/i],
-["tech_help",/phone|computer|tech|ai|software|website/i],
+["tech_help",/phone|computer|tech|\bai\b|software|website/i],
 ["business",/business|client|sales|invoice|money|company/i]
 ];
 export function classify(message){
