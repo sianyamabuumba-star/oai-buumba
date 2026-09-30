@@ -1,0 +1,7 @@
+[
+{"id":"demo-accommodation-01","name":"Demo Lodge","category":"Accommodation","verified":false},
+{"id":"demo-transport-01","name":"Demo Transfer","category":"Transport","verified":false},
+{"id":"demo-tour-01","name":"Demo Activity Desk","category":"Tour / Activity","verified":false},
+{"id":"demo-creative-01","name":"Demo Creative Desk","category":"Creative / Design","verified":false},
+{"id":"demo-tech-01","name":"Demo Tech Help","category":"Tech Help","verified":false}
+]
