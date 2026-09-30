@@ -5,7 +5,7 @@ import {fileURLToPath} from "url";
 import {JsonStore} from "./core/store.js";
 import {auditEvent} from "./core/audit.js";
 import {adapters,systemStatus} from "./core/adapters.js";
-import {createTask,runTask} from "./core/tasks.js";
+import {createTask,runTask,retryTask} from "./core/tasks.js";
 import {classify,extractRequirements} from "./core/router.js";
 import {matchProviders} from "./core/match.js";
 
@@ -82,6 +82,12 @@ app.get("/api/tasks",async(req,res)=>res.json(await taskStore.all()));
 app.get("/api/tasks/:id",async(req,res)=>{
   const task=(await taskStore.all()).find(x=>x.id===req.params.id);
   task?res.json(task):res.status(404).json({error:"not found"});
+});
+
+app.post("/api/tasks/:id/retry",async(req,res)=>{
+  const task=(await taskStore.all()).find(x=>x.id===req.params.id);
+  if(!task)return res.status(404).json({error:"not found"});
+  try{res.json(await retryTask(taskStore,audit,adapters,task));}catch(e){res.status(400).json({error:e.message})}
 });
 
 app.post("/api/tasks/:id/run",async(req,res)=>{
