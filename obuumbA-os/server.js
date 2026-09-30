@@ -14,6 +14,7 @@ import {validateProvider} from "./core/provider-onboarding.js";
 import {createService,isAvailable,checkRequirements} from "./core/services.js";
 import {createBooking,advanceBooking} from "./core/bookings.js";
 import {createProviderAction,updateProviderAction} from "./core/provider-actions.js";
+import {createMessage,transitionMessage,buildProviderRequestMessage} from "./core/messaging.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
@@ -28,6 +29,7 @@ const providerStore=new JsonStore(path.join(dataDir,"providers-runtime.json"));
 const serviceStore=new JsonStore(path.join(dataDir,"services.json"));
 const bookingStore=new JsonStore(path.join(dataDir,"bookings.json"));
 const providerActionStore=new JsonStore(path.join(dataDir,"provider-actions.json"));
+const messageStore=new JsonStore(path.join(dataDir,"messages.json"));
 
 async function audit(event){ return auditEvent(auditStore,event); }
 async function providers(){
@@ -75,6 +77,32 @@ app.get("/api/providers",async(req,res)=>res.json([...await providers(),...await
 app.get("/api/services",async(req,res)=>res.json(await serviceStore.all()));
 app.get("/api/bookings",async(req,res)=>res.json(await bookingStore.all()));
 app.get("/api/provider-actions",async(req,res)=>res.json(await providerActionStore.all()));
+app.get("/api/messages",async(req,res)=>res.json(await messageStore.all()));
+app.post("/api/provider-actions/:id/message",async(req,res)=>{
+  const action=(await providerActionStore.all()).find(x=>x.id===req.params.id);
+  if(!action)return res.status(404).json({error:"provider action not found"});
+  if(!["PENDING","ACCEPTED"].includes(action.status))return res.status(409).json({error:"provider action is not active"});
+  const recipient=String(req.body?.recipient||"").trim();
+  if(!recipient)return res.status(400).json({error:"recipient required"});
+  try{
+    const msg=createMessage({channel:req.body?.channel||"MANUAL",recipient,bookingId:action.bookingId,providerActionId:action.id,body:req.body?.body||buildProviderRequestMessage(action)});
+    const queued=transitionMessage(msg,"QUEUED");
+    await messageStore.insert(queued);
+    await audit({type:"message.queued",messageId:queued.id,providerActionId:action.id,channel:queued.channel});
+    res.status(201).json(queued);
+  }catch(e){res.status(400).json({error:e.message})}
+});
+app.patch("/api/messages/:id",async(req,res)=>{
+  const msg=(await messageStore.all()).find(x=>x.id===req.params.id);
+  if(!msg)return res.status(404).json({error:"message not found"});
+  try{
+    const next=transitionMessage(msg,String(req.body?.status||""),req.body?.externalId);
+    await messageStore.update(msg.id,next);
+    await audit({type:"message.updated",messageId:msg.id,status:next.status,channel:next.channel});
+    res.json(next);
+  }catch(e){res.status(409).json({error:e.message})}
+});
+
 app.post("/api/bookings/:id/provider-request",async(req,res)=>{
   const booking=(await bookingStore.all()).find(x=>x.id===req.params.id);
   if(!booking)return res.status(404).json({error:"booking not found"});
