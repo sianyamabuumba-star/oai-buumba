@@ -11,6 +11,7 @@ import {matchProviders} from "./core/match.js";
 import {simulateConcierge} from "./core/simulation.js";
 import {nextRequestState} from "./core/request-flow.js";
 import {validateProvider} from "./core/provider-onboarding.js";
+import {createService,isAvailable} from "./core/services.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
@@ -22,6 +23,7 @@ const requestStore=new JsonStore(path.join(dataDir,"requests.json"));
 const taskStore=new JsonStore(path.join(dataDir,"tasks.json"));
 const auditStore=new JsonStore(path.join(dataDir,"audit.json"));
 const providerStore=new JsonStore(path.join(dataDir,"providers-runtime.json"));
+const serviceStore=new JsonStore(path.join(dataDir,"services.json"));
 
 async function audit(event){ return auditEvent(auditStore,event); }
 async function providers(){
@@ -64,7 +66,10 @@ app.post("/api/requests",async(req,res)=>{
 });
 
 app.get("/api/requests",async(req,res)=>res.json(await requestStore.all()));
-app.get("/api/providers",async(req,res)=>res.json(await providers()));
+app.get("/api/providers",async(req,res)=>res.json([...await providers(),...await providerStore.all()]));
+app.get("/api/services",async(req,res)=>res.json(await serviceStore.all()));
+app.post("/api/services",async(req,res)=>{try{const service=createService(req.body);const provider=[...await providers(),...await providerStore.all()].find(p=>p.id===service.providerId);if(!provider)return res.status(404).json({error:"provider not found"});await serviceStore.insert(service);await audit({type:"service.created",serviceId:service.id,providerId:service.providerId});res.status(201).json(service)}catch(e){res.status(400).json({error:e.message})}});
+app.post("/api/services/:id/check-availability",async(req,res)=>{const service=(await serviceStore.all()).find(x=>x.id===req.params.id);if(!service)return res.status(404).json({error:"service not found"});const result=isAvailable(service,req.body?.when);await audit({type:"availability.checked",serviceId:service.id,status:result.status});res.json({...result,serviceId:service.id,mode:service.availability.mode})});
 
 app.post("/api/providers",async(req,res)=>{
   try{
