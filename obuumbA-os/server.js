@@ -15,7 +15,7 @@ import {createService,isAvailable,checkRequirements} from "./core/services.js";
 import {createBooking,advanceBooking} from "./core/bookings.js";
 import {createProviderAction,updateProviderAction} from "./core/provider-actions.js";
 import {createMessage,transitionMessage,buildProviderRequestMessage} from "./core/messaging.js";
-import {verifyWebhookSignature,normalizeInbound,buildOutboundPayload,webhookChallenge} from "./core/whatsapp.js";
+import {verifyWebhookSignature,normalizeInbound,buildOutboundPayload,webhookChallenge,sendWhatsAppText} from "./core/whatsapp.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
@@ -112,6 +112,22 @@ app.post("/api/provider-actions/:id/message",async(req,res)=>{
     await audit({type:"message.queued",messageId:queued.id,providerActionId:action.id,channel:queued.channel});
     res.status(201).json(queued);
   }catch(e){res.status(400).json({error:e.message})}
+});
+app.post("/api/messages/:id/send",async(req,res)=>{
+  const msg=(await messageStore.all()).find(x=>x.id===req.params.id);
+  if(!msg)return res.status(404).json({error:"message not found"});
+  if(msg.channel!=="WHATSAPP")return res.status(409).json({error:"message channel is not WHATSAPP"});
+  if(!["QUEUED","FAILED"].includes(msg.status))return res.status(409).json({error:"message is not sendable"});
+  const result=await sendWhatsAppText(msg);
+  if(result.status==="SENT"){
+    const updated=transitionMessage(msg,"SENT",result.externalId);
+    await messageStore.update(msg.id,updated);
+    await audit({type:"whatsapp.sent",messageId:msg.id,externalId:result.externalId});
+    return res.json({...updated,provider:result});
+  }
+  await messageStore.update(msg.id,{status:"FAILED",updatedAt:new Date().toISOString()});
+  await audit({type:"whatsapp.send_failed",messageId:msg.id,reason:result.reason});
+  res.status(result.status==="BLOCKED"?503:502).json({...result,messageId:msg.id});
 });
 app.patch("/api/messages/:id",async(req,res)=>{
   const msg=(await messageStore.all()).find(x=>x.id===req.params.id);
