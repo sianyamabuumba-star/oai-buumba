@@ -1,1 +1,26 @@
-{"type":"array","items":{"type":"object","required":["id","name","category","verified"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"category":{"type":"string"},"verified":{"type":"boolean"},"phone":{"type":"string"},"location":{"type":"string"},"service_ids":{"type":"array","items":{"type":"string"}}}}}
+{
+  "type":"array",
+  "items":{
+    "type":"object",
+    "required":["id","name","category","verified","verification"],
+    "properties":{
+      "id":{"type":"string","minLength":3},
+      "name":{"type":"string","minLength":2},
+      "category":{"type":"string","minLength":2},
+      "verified":{"type":"boolean"},
+      "verification":{
+        "type":"object",
+        "required":["status"],
+        "properties":{
+          "status":{"type":"string","enum":["UNVERIFIED","PENDING","VERIFIED","SUSPENDED"]},
+          "verifiedAt":{"type":["string","null"]},
+          "method":{"type":["string","null"]}
+        }
+      },
+      "phone":{"type":["string","null"]},
+      "location":{"type":["string","null"]},
+      "tags":{"type":"array","items":{"type":"string"}},
+      "service_ids":{"type":"array","items":{"type":"string"}}
+    }
+  }
+}
