@@ -39,3 +39,19 @@ export function webhookChallenge(query,verifyToken){
   if(String(query?.hub_verify_token||"")!==String(verifyToken||""))return null;
   return query?.hub_challenge?String(query.hub_challenge):null;
 }
+
+
+export async function sendWhatsAppText(message,fetchImpl=fetch){
+  const token=process.env.WHATSAPP_ACCESS_TOKEN;
+  const phoneNumberId=process.env.WHATSAPP_PHONE_NUMBER_ID;
+  if(!token||!phoneNumberId) return {status:"BLOCKED",reason:"WhatsApp credentials are not configured."};
+  const payload=buildOutboundPayload(message,phoneNumberId);
+  const response=await fetchImpl("https://graph.facebook.com/v23.0/"+encodeURIComponent(phoneNumberId)+"/messages",{
+    method:"POST",
+    headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+    body:JSON.stringify(payload)
+  });
+  const body=await response.json().catch(()=>({}));
+  if(!response.ok) return {status:"FAILED",reason:body?.error?.message||"WhatsApp API request failed.",httpStatus:response.status,body};
+  return {status:"SENT",externalId:body?.messages?.[0]?.id||null,body};
+}
