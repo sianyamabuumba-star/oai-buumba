@@ -7,6 +7,7 @@ import {createTask,runTask} from "../core/tasks.js";
 import {adapters} from "../core/adapters.js";
 import {classify,extractRequirements} from "../core/router.js";
 import {simulateConcierge} from "../core/simulation.js";
+import {canTransition} from "../core/request-flow.js";
 import {matchProviders} from "../core/match.js";
 
 const dir=await fs.mkdtemp(path.join(os.tmpdir(),"obuumba-"));
@@ -32,6 +33,9 @@ const simulation=await simulateConcierge("airport pickup tomorrow at 7pm in Livi
 assert.equal(simulation.mode,"SIMULATION_ONLY");
 assert.equal(simulation.externalSideEffects,false);
 assert.equal(simulation.events.at(-1).status,"DONE");
+
+assert.equal(canTransition("MATCHING","AWAITING_CONFIRMATION"),true);
+assert.equal(canTransition("COMPLETED","CONFIRMED"),false);
 
 const task=await createTask(taskStore,{domain:"concierge",goal:"Route airport pickup",actions:[{adapter:"local",action:"classify_request",payload:{message:"airport pickup"}}]});
 const done=await runTask(taskStore,audit,adapters,task);
