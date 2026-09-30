@@ -20,7 +20,8 @@ export const adapters = {
   database: blocked("database","Managed production database is not connected; local JSON persistence is active."),
   payments: blocked("payments","Payment provider is not connected."),
   maps: blocked("maps","Maps/routing provider is not connected."),
-  notifications: blocked("notifications","Notification provider is not connected.")
+  notifications: blocked("notifications","Notification provider is not connected."),
+  messaging: blocked("messaging","WhatsApp Business or another messaging provider is not connected.")
 };
 export function systemStatus(){
   return Object.values(adapters).map(a=>a.health());
