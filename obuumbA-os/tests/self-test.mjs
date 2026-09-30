@@ -49,6 +49,10 @@ assert.equal(service.providerId,provider.id);
 assert.equal(isAvailable(service,"2026-09-30T19:00:00").status,"AVAILABLE");
 assert.equal(isAvailable(service,"2026-10-01T19:00:00").status,"UNAVAILABLE");
 
+const ranked=await (await import("../core/match.js")).matchProviders([provider],["transport"],{location:"Livingstone"},[service]);
+assert.equal(ranked.length,1);
+assert.equal(ranked[0].matchedServices[0].name,"Airport Pickup");
+
 const task=await createTask(taskStore,{domain:"concierge",goal:"Route airport pickup",actions:[{adapter:"local",action:"classify_request",payload:{message:"airport pickup"}}]});
 const done=await runTask(taskStore,audit,adapters,task);
 assert.equal(done.status,"DONE");
