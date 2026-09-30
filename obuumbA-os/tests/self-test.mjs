@@ -8,6 +8,7 @@ import {adapters} from "../core/adapters.js";
 import {classify,extractRequirements} from "../core/router.js";
 import {simulateConcierge} from "../core/simulation.js";
 import {canTransition} from "../core/request-flow.js";
+import {validateProvider} from "../core/provider-onboarding.js";
 import {matchProviders} from "../core/match.js";
 
 const dir=await fs.mkdtemp(path.join(os.tmpdir(),"obuumba-"));
@@ -36,6 +37,11 @@ assert.equal(simulation.events.at(-1).status,"DONE");
 
 assert.equal(canTransition("MATCHING","AWAITING_CONFIRMATION"),true);
 assert.equal(canTransition("COMPLETED","CONFIRMED"),false);
+
+const provider=validateProvider({name:"Test Transfer",category:"Transport",verification:{status:"VERIFIED",method:"owner_check"},tags:["airport pickup"]});
+assert.equal(provider.verified,true);
+assert.equal(provider.verification.status,"VERIFIED");
+assert.throws(()=>validateProvider({name:"Bad",category:"Transport",verification:{status:"UNKNOWN"}}));
 
 const task=await createTask(taskStore,{domain:"concierge",goal:"Route airport pickup",actions:[{adapter:"local",action:"classify_request",payload:{message:"airport pickup"}}]});
 const done=await runTask(taskStore,audit,adapters,task);
