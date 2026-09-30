@@ -52,7 +52,7 @@ app.post("/api/requests",async(req,res)=>{
   const r={
     id:crypto.randomUUID(),message,intents,
     requirements,
-    matches:matched.map(p=>({providerId:p.id||null,name:p.name,category:p.category,verified:true,matchScore:p.matchScore,services:p.matchedServices.map(s=>({id:s.id,name:s.name,score:s.serviceScore}))})),
+    matches:matched.map(p=>({providerId:p.id||null,name:p.name,category:p.category,verified:true,matchScore:p.matchScore,services:p.matchedServices.map(s=>({id:s.id,name:s.name,score:s.serviceScore,availability:checkRequirements(s,requirements)}))})),
     status:matched.length?"MATCHING":"NEEDS_HUMAN",createdAt:new Date().toISOString()
   };
   await requestStore.insert(r);
