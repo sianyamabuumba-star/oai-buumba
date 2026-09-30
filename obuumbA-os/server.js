@@ -76,10 +76,18 @@ app.patch("/api/requests/:id",async(req,res)=>{
   if(req.body.status && !allowed.includes(req.body.status))return res.status(400).json({error:"invalid status"});
   let nextStatus=req.body.status||current.status;
   if(req.body.action){
+    if(req.body.action==="confirm" && req.body.approval!==true)
+      return res.status(400).json({error:"explicit approval required"});
     try{nextStatus=nextRequestState(current,req.body.action);}
     catch(e){return res.status(409).json({error:e.message});}
   }
-  const updated=await requestStore.update(req.params.id,{status:nextStatus});
+  const patch={status:nextStatus};
+  if(req.body.action==="confirm"){
+    patch.ownerApprovedAt=new Date().toISOString();
+    patch.confirmationMode="OWNER_APPROVAL";
+    patch.externalConfirmation="NOT_VERIFIED";
+  }
+  const updated=await requestStore.update(req.params.id,patch);
   await audit({type:"request.updated",requestId:updated.id,status:updated.status});
   res.json(updated);
 });
