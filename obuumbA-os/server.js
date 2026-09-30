@@ -37,12 +37,13 @@ app.post("/api/requests",async(req,res)=>{
   const message=String(req.body?.message||"").trim();
   if(!message)return res.status(400).json({error:"message required"});
   const intents=classify(message);
-  const matched=await matchProviders(new URL("./data/providers.json",import.meta.url),intents).catch(()=>[]);
+  const requirements=extractRequirements(message);
+  const matched=await matchProviders(new URL("./data/providers.json",import.meta.url),intents,requirements).catch(()=>[]);
   const r={
     id:crypto.randomUUID(),message,intents,
-    requirements:extractRequirements(message),
-    matches:matched.map(p=>({providerId:p.id||null,name:p.name,category:p.category,verified:true})),
-    status:matched.length?"MATCHING":"NEW",createdAt:new Date().toISOString()
+    requirements,
+    matches:matched.map(p=>({providerId:p.id||null,name:p.name,category:p.category,verified:true,matchScore:p.matchScore})),
+    status:matched.length?"MATCHING":"NEEDS_HUMAN",createdAt:new Date().toISOString()
   };
   await requestStore.insert(r);
   await audit({type:"request.created",requestId:r.id,intents});
