@@ -15,6 +15,7 @@ import {createService,isAvailable,checkRequirements} from "./core/services.js";
 import {createBooking,advanceBooking} from "./core/bookings.js";
 import {createProviderAction,updateProviderAction} from "./core/provider-actions.js";
 import {createMessage,transitionMessage,buildProviderRequestMessage} from "./core/messaging.js";
+import {verifyWebhookSignature,normalizeInbound,buildOutboundPayload,webhookChallenge} from "./core/whatsapp.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
@@ -37,6 +38,26 @@ async function providers(){
   catch{return []}
 }
 
+app.get("/webhooks/whatsapp",async(req,res)=>{
+  const challenge=webhookChallenge(req.query,process.env.WHATSAPP_VERIFY_TOKEN);
+  challenge===null?res.status(403).send("forbidden"):res.status(200).send(challenge);
+});
+app.post("/webhooks/whatsapp",async(req,res)=>{
+  const raw=JSON.stringify(req.body||{});
+  const signature=req.get("x-hub-signature-256");
+  if(!verifyWebhookSignature(raw,signature,process.env.WHATSAPP_APP_SECRET)) return res.status(401).json({error:"invalid signature"});
+  const inbound=normalizeInbound(req.body);
+  if(inbound){
+    const existing=(await messageStore.all()).find(x=>x.externalId===inbound.id&&x.channel==="WHATSAPP");
+    if(!existing){
+      const msg=createMessage({channel:"WHATSAPP",direction:"INBOUND",recipient:inbound.sender,body:inbound.text||"",bookingId:null});
+      const stored=transitionMessage(msg,"QUEUED",inbound.id);
+      await messageStore.insert(stored);
+      await audit({type:"whatsapp.inbound",messageId:stored.id,externalId:inbound.id});
+    }
+  }
+  res.sendStatus(200);
+});
 app.get("/api/health",async(req,res)=>{
   res.json({ok:true,service:"O'BUUMBA OS",mode:"MVP+",persistence:"local-json",time:new Date().toISOString()});
 });
