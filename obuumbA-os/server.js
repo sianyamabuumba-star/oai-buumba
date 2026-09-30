@@ -42,7 +42,10 @@ app.post("/api/requests",async(req,res)=>{
   if(!message)return res.status(400).json({error:"message required"});
   const intents=classify(message);
   const requirements=extractRequirements(message);
-  const matched=await matchProviders(new URL("./data/providers.json",import.meta.url),intents,requirements).catch(()=>[]);
+  const runtime=await providerStore.all();
+  const base=await providers();
+  const registry=[...base,...runtime];
+  const matched=await matchProviders(registry,intents,requirements).catch(()=>[]);
   const r={
     id:crypto.randomUUID(),message,intents,
     requirements,
