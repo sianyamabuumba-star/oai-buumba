@@ -7,6 +7,7 @@ import {auditEvent} from "./core/audit.js";
 import {adapters,systemStatus} from "./core/adapters.js";
 import {createTask,runTask} from "./core/tasks.js";
 import {classify,extractRequirements} from "./core/router.js";
+import {matchProviders} from "./core/match.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
@@ -36,10 +37,12 @@ app.post("/api/requests",async(req,res)=>{
   const message=String(req.body?.message||"").trim();
   if(!message)return res.status(400).json({error:"message required"});
   const intents=classify(message);
+  const matched=await matchProviders(new URL("./data/providers.json",import.meta.url),intents).catch(()=>[]);
   const r={
     id:crypto.randomUUID(),message,intents,
     requirements:extractRequirements(message),
-    status:"NEW",createdAt:new Date().toISOString()
+    matches:matched.map(p=>({providerId:p.id||null,name:p.name,category:p.category,verified:true})),
+    status:matched.length?"MATCHING":"NEW",createdAt:new Date().toISOString()
   };
   await requestStore.insert(r);
   await audit({type:"request.created",requestId:r.id,intents});
@@ -53,6 +56,7 @@ app.post("/api/requests",async(req,res)=>{
 });
 
 app.get("/api/requests",async(req,res)=>res.json(await requestStore.all()));
+app.get("/api/providers",async(req,res)=>res.json(await providers()));
 
 app.patch("/api/requests/:id",async(req,res)=>{
   const current=(await requestStore.all()).find(x=>x.id===req.params.id);
