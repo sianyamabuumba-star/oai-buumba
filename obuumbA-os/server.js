@@ -12,6 +12,7 @@ import {simulateConcierge} from "./core/simulation.js";
 import {nextRequestState} from "./core/request-flow.js";
 import {validateProvider} from "./core/provider-onboarding.js";
 import {createService,isAvailable,checkRequirements} from "./core/services.js";
+import {createBooking,advanceBooking} from "./core/bookings.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
@@ -24,6 +25,7 @@ const taskStore=new JsonStore(path.join(dataDir,"tasks.json"));
 const auditStore=new JsonStore(path.join(dataDir,"audit.json"));
 const providerStore=new JsonStore(path.join(dataDir,"providers-runtime.json"));
 const serviceStore=new JsonStore(path.join(dataDir,"services.json"));
+const bookingStore=new JsonStore(path.join(dataDir,"bookings.json"));
 
 async function audit(event){ return auditEvent(auditStore,event); }
 async function providers(){
@@ -69,6 +71,33 @@ app.post("/api/requests",async(req,res)=>{
 app.get("/api/requests",async(req,res)=>res.json(await requestStore.all()));
 app.get("/api/providers",async(req,res)=>res.json([...await providers(),...await providerStore.all()]));
 app.get("/api/services",async(req,res)=>res.json(await serviceStore.all()));
+app.get("/api/bookings",async(req,res)=>res.json(await bookingStore.all()));
+app.post("/api/bookings",async(req,res)=>{
+  try{
+    const body=req.body||{};
+    const request=(await requestStore.all()).find(x=>x.id===body.requestId);
+    if(!request)return res.status(404).json({error:"request not found"});
+    const provider=[...await providers(),...await providerStore.all()].find(x=>x.id===body.providerId);
+    const service=(await serviceStore.all()).find(x=>x.id===body.serviceId);
+    if(!provider)return res.status(404).json({error:"provider not found"});
+    if(!service)return res.status(404).json({error:"service not found"});
+    const booking=createBooking({requestId:request.id,providerId:provider.id,serviceId:service.id,customer:body.customer,requestSnapshot:{message:request.message,requirements:request.requirements},providerSnapshot:{id:provider.id,name:provider.name,category:provider.category},serviceSnapshot:{id:service.id,name:service.name}});
+    await bookingStore.insert(booking);
+    await audit({type:"booking.created",bookingId:booking.id,requestId:request.id,status:booking.status});
+    res.status(201).json(booking);
+  }catch(e){res.status(400).json({error:e.message})}
+});
+app.patch("/api/bookings/:id",async(req,res)=>{
+  const current=(await bookingStore.all()).find(x=>x.id===req.params.id);
+  if(!current)return res.status(404).json({error:"booking not found"});
+  try{
+    const updated=advanceBooking(current,String(req.body?.status||""),{externalId:req.body?.externalId});
+    await bookingStore.update(current.id,updated);
+    await audit({type:"booking.updated",bookingId:current.id,status:updated.status});
+    res.json(updated);
+  }catch(e){res.status(409).json({error:e.message})}
+});
+
 app.post("/api/services",async(req,res)=>{try{const service=createService(req.body);const provider=[...await providers(),...await providerStore.all()].find(p=>p.id===service.providerId);if(!provider)return res.status(404).json({error:"provider not found"});await serviceStore.insert(service);await audit({type:"service.created",serviceId:service.id,providerId:service.providerId});res.status(201).json(service)}catch(e){res.status(400).json({error:e.message})}});
 app.post("/api/services/:id/check-availability",async(req,res)=>{const service=(await serviceStore.all()).find(x=>x.id===req.params.id);if(!service)return res.status(404).json({error:"service not found"});const result=isAvailable(service,req.body?.when);await audit({type:"availability.checked",serviceId:service.id,status:result.status});res.json({...result,serviceId:service.id,mode:service.availability.mode})});
 
