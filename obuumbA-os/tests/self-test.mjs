@@ -13,8 +13,15 @@ const auditStore=new JsonStore(path.join(dir,"audit.json"));
 const audit=event=>auditStore.insert(event);
 
 assert.deepEqual(classify("I need an airport pickup"),["transport"]);
+assert.deepEqual(classify("I need AI help with my website"),["tech_help"]);
 assert.ok(classify("help with my logo and website").includes("creative_design"));
-assert.deepEqual(extractRequirements("pickup tomorrow at 7pm for K500").timeHints,["7pm"]);
+const req=extractRequirements("pickup tomorrow at 7pm in Livingstone for 4 guests under K500");
+assert.deepEqual(req.timeHints,["7pm"]);
+assert.deepEqual(req.dateHints,["tomorrow"]);
+assert.equal(req.location,"Livingstone");
+assert.equal(req.partySize,4);
+assert.deepEqual(req.budgetHints,["K500"]);
+
 const task=await createTask(taskStore,{domain:"concierge",goal:"Route airport pickup",actions:[{adapter:"local",action:"classify_request",payload:{message:"airport pickup"}}]});
 const done=await runTask(taskStore,audit,adapters,task);
 assert.equal(done.status,"DONE");
