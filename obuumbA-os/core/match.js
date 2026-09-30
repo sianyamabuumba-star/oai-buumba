@@ -12,9 +12,8 @@ function scoreProvider(provider,intents,requirements={}){
   return score;
 }
 
-export async function matchProviders(providerFile,intents,requirements={}){
-  const providers=await import(providerFile,{with:{type:"json"}});
-  const list=providers.default||providers;
+export async function matchProviders(providerSource,intents,requirements={}){
+  const list=Array.isArray(providerSource)?providerSource:(await import(providerSource,{with:{type:"json"}})).default;
   return list
     .filter(p=>p.verified===true && p.verification?.status==="VERIFIED")
     .map(p=>({...p,matchScore:scoreProvider(p,intents,requirements)}))
