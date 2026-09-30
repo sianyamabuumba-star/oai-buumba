@@ -53,7 +53,22 @@ app.post("/webhooks/whatsapp",async(req,res)=>{
       const msg=createMessage({channel:"WHATSAPP",direction:"INBOUND",recipient:inbound.sender,body:inbound.text||"",bookingId:null});
       const stored=transitionMessage(msg,"QUEUED",inbound.id);
       await messageStore.insert(stored);
-      await audit({type:"whatsapp.inbound",messageId:stored.id,externalId:inbound.id});
+      let requestId=null;
+      if(inbound.text){
+        const intents=classify(inbound.text);
+        const requirements=extractRequirements(inbound.text);
+        const runtime=await providerStore.all();
+        const base=await providers();
+        const services=await serviceStore.all();
+        const matched=await matchProviders([...base,...runtime],intents,requirements,services).catch(()=>[]);
+        const request={id:crypto.randomUUID(),channel:"WHATSAPP",sourceMessageId:stored.id,customer:{phone:inbound.sender},message:inbound.text,intents,requirements,matches:matched.map(p=>({providerId:p.id||null,name:p.name,category:p.category,verified:true,matchScore:p.matchScore,services:p.matchedServices.map(s=>({id:s.id,name:s.name,score:s.serviceScore,availability:checkRequirements(s,requirements)}))})),status:matched.length?"MATCHING":"NEEDS_HUMAN",createdAt:new Date().toISOString()};
+        await requestStore.insert(request);
+        requestId=request.id;
+        const task=await createTask(taskStore,{domain:"concierge",goal:`Route WhatsApp request ${request.id}`,inputs:{requestId:request.id,message:inbound.text,intents},actions:[{adapter:"local",action:"classify_request",payload:{requestId:request.id,intents}}]});
+        await runTask(taskStore,audit,adapters,task);
+        await audit({type:"request.created.from_whatsapp",requestId:request.id,messageId:stored.id,intents});
+      }
+      await audit({type:"whatsapp.inbound",messageId:stored.id,externalId:inbound.id,requestId});
     }
   }
   res.sendStatus(200);
