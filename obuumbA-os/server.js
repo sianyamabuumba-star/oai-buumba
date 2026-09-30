@@ -10,6 +10,7 @@ import {classify,extractRequirements} from "./core/router.js";
 import {matchProviders} from "./core/match.js";
 import {simulateConcierge} from "./core/simulation.js";
 import {nextRequestState} from "./core/request-flow.js";
+import {validateProvider} from "./core/provider-onboarding.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
@@ -20,6 +21,7 @@ const dataDir=path.join(__dirname,"data","runtime");
 const requestStore=new JsonStore(path.join(dataDir,"requests.json"));
 const taskStore=new JsonStore(path.join(dataDir,"tasks.json"));
 const auditStore=new JsonStore(path.join(dataDir,"audit.json"));
+const providerStore=new JsonStore(path.join(dataDir,"providers-runtime.json"));
 
 async function audit(event){ return auditEvent(auditStore,event); }
 async function providers(){
@@ -60,6 +62,29 @@ app.post("/api/requests",async(req,res)=>{
 
 app.get("/api/requests",async(req,res)=>res.json(await requestStore.all()));
 app.get("/api/providers",async(req,res)=>res.json(await providers()));
+
+app.post("/api/providers",async(req,res)=>{
+  try{
+    const provider=validateProvider(req.body);
+    const existing=await providerStore.all();
+    if(existing.some(p=>p.id===provider.id)) return res.status(409).json({error:"provider id already exists"});
+    await providerStore.insert(provider);
+    await audit({type:"provider.created",providerId:provider.id,verification:provider.verification.status});
+    res.status(201).json(provider);
+  }catch(e){res.status(400).json({error:e.message})}
+});
+
+app.patch("/api/providers/:id/verification",async(req,res)=>{
+  const items=await providerStore.all();
+  const current=items.find(p=>p.id===req.params.id);
+  if(!current)return res.status(404).json({error:"provider not found"});
+  try{
+    const next=validateProvider({...current,verification:req.body.verification});
+    const updated=await providerStore.update(current.id,{verified:next.verified,verification:next.verification});
+    await audit({type:"provider.verification.updated",providerId:current.id,status:next.verification.status});
+    res.json(updated);
+  }catch(e){res.status(400).json({error:e.message})}
+});
 
 app.post("/api/simulate",async(req,res)=>{
   const message=String(req.body?.message||"").trim();
