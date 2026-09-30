@@ -8,6 +8,7 @@ import {adapters,systemStatus} from "./core/adapters.js";
 import {createTask,runTask,retryTask} from "./core/tasks.js";
 import {classify,extractRequirements} from "./core/router.js";
 import {matchProviders} from "./core/match.js";
+import {simulateConcierge} from "./core/simulation.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
@@ -58,6 +59,14 @@ app.post("/api/requests",async(req,res)=>{
 
 app.get("/api/requests",async(req,res)=>res.json(await requestStore.all()));
 app.get("/api/providers",async(req,res)=>res.json(await providers()));
+
+app.post("/api/simulate",async(req,res)=>{
+  const message=String(req.body?.message||"").trim();
+  if(!message)return res.status(400).json({error:"message required"});
+  const result=await simulateConcierge(message,new URL("./data/providers.json",import.meta.url));
+  await audit({type:"simulation.completed",simulationId:result.simulationId,intents:result.intents,externalSideEffects:false});
+  res.status(200).json(result);
+});
 
 app.patch("/api/requests/:id",async(req,res)=>{
   const current=(await requestStore.all()).find(x=>x.id===req.params.id);
