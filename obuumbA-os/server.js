@@ -13,6 +13,7 @@ import {nextRequestState} from "./core/request-flow.js";
 import {validateProvider} from "./core/provider-onboarding.js";
 import {createService,isAvailable,checkRequirements} from "./core/services.js";
 import {createBooking,advanceBooking} from "./core/bookings.js";
+import {createProviderAction,updateProviderAction} from "./core/provider-actions.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
@@ -26,6 +27,7 @@ const auditStore=new JsonStore(path.join(dataDir,"audit.json"));
 const providerStore=new JsonStore(path.join(dataDir,"providers-runtime.json"));
 const serviceStore=new JsonStore(path.join(dataDir,"services.json"));
 const bookingStore=new JsonStore(path.join(dataDir,"bookings.json"));
+const providerActionStore=new JsonStore(path.join(dataDir,"provider-actions.json"));
 
 async function audit(event){ return auditEvent(auditStore,event); }
 async function providers(){
@@ -72,6 +74,36 @@ app.get("/api/requests",async(req,res)=>res.json(await requestStore.all()));
 app.get("/api/providers",async(req,res)=>res.json([...await providers(),...await providerStore.all()]));
 app.get("/api/services",async(req,res)=>res.json(await serviceStore.all()));
 app.get("/api/bookings",async(req,res)=>res.json(await bookingStore.all()));
+app.get("/api/provider-actions",async(req,res)=>res.json(await providerActionStore.all()));
+app.post("/api/bookings/:id/provider-request",async(req,res)=>{
+  const booking=(await bookingStore.all()).find(x=>x.id===req.params.id);
+  if(!booking)return res.status(404).json({error:"booking not found"});
+  if(!["OWNER_APPROVED","AWAITING_PROVIDER"].includes(booking.status)) return res.status(409).json({error:"booking must be owner-approved before provider request"});
+  const existing=(await providerActionStore.all()).find(x=>x.bookingId===booking.id&&["PENDING","ACCEPTED"].includes(x.status));
+  if(existing)return res.status(409).json({error:"provider request already active"});
+  const action=updateProviderAction(createProviderAction(booking),"PENDING");
+  await providerActionStore.insert(action);
+  if(booking.status==="OWNER_APPROVED"){
+    const updated=advanceBooking(booking,"AWAITING_PROVIDER");
+    await bookingStore.update(booking.id,updated);
+  }
+  await audit({type:"provider.requested",bookingId:booking.id,providerActionId:action.id,channel:action.channel});
+  res.status(201).json(action);
+});
+app.patch("/api/provider-actions/:id",async(req,res)=>{
+  const action=(await providerActionStore.all()).find(x=>x.id===req.params.id);
+  if(!action)return res.status(404).json({error:"provider action not found"});
+  try{
+    const next=updateProviderAction(action,String(req.body?.status||""),{response:req.body?.response,externalId:req.body?.externalId});
+    await providerActionStore.update(action.id,next);
+    const booking=(await bookingStore.all()).find(x=>x.id===action.bookingId);
+    if(booking&&next.status==="ACCEPTED") await bookingStore.update(booking.id,advanceBooking(booking,"PROVIDER_CONFIRMED",{externalId:next.externalId}));
+    if(booking&&next.status==="DECLINED") await bookingStore.update(booking.id,advanceBooking(booking,"FAILED"));
+    await audit({type:"provider.response",bookingId:action.bookingId,providerActionId:action.id,status:next.status});
+    res.json(next);
+  }catch(e){res.status(409).json({error:e.message})}
+});
+
 app.post("/api/bookings",async(req,res)=>{
   try{
     const body=req.body||{};
