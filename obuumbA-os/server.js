@@ -137,7 +137,11 @@ app.patch("/api/requests/:id",async(req,res)=>{
   if(!current)return res.status(404).json({error:"not found"});
   const allowed=["NEW","MATCHING","AWAITING_CONFIRMATION","CONFIRMED","IN_PROGRESS","COMPLETED","NEEDS_HUMAN","CANCELLED","FAILED"];
   if(req.body.status && !allowed.includes(req.body.status))return res.status(400).json({error:"invalid status"});
-  let nextStatus=req.body.status||current.status;
+  let nextStatus=current.status;
+  if(req.body.status && !req.body.action){
+    try{nextStatus=nextRequestState(current, String(req.body.status).toLowerCase().replace("awaiting_confirmation","match").replace("confirmed","confirm").replace("in_progress","start").replace("completed","complete").replace("cancelled","cancel").replace("needs_human","escalate"));}
+    catch(e){return res.status(409).json({error:e.message});}
+  }
   if(req.body.action){
     if(req.body.action==="confirm" && req.body.approval!==true)
       return res.status(400).json({error:"explicit approval required"});
