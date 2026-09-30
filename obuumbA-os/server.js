@@ -47,11 +47,12 @@ app.post("/api/requests",async(req,res)=>{
   const runtime=await providerStore.all();
   const base=await providers();
   const registry=[...base,...runtime];
-  const matched=await matchProviders(registry,intents,requirements).catch(()=>[]);
+  const services=await serviceStore.all();
+  const matched=await matchProviders(registry,intents,requirements,services).catch(()=>[]);
   const r={
     id:crypto.randomUUID(),message,intents,
     requirements,
-    matches:matched.map(p=>({providerId:p.id||null,name:p.name,category:p.category,verified:true,matchScore:p.matchScore})),
+    matches:matched.map(p=>({providerId:p.id||null,name:p.name,category:p.category,verified:true,matchScore:p.matchScore,services:p.matchedServices.map(s=>({id:s.id,name:s.name,score:s.serviceScore}))})),
     status:matched.length?"MATCHING":"NEEDS_HUMAN",createdAt:new Date().toISOString()
   };
   await requestStore.insert(r);
