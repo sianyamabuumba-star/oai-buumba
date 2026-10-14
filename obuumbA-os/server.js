@@ -13,7 +13,7 @@ import {simulateConcierge} from "./core/simulation.js";
 import {nextRequestState} from "./core/request-flow.js";
 import {validateProvider} from "./core/provider-onboarding.js";
 import {createService,isAvailable,checkRequirements} from "./core/services.js";
-import {createBooking,advanceBooking} from "./core/bookings.js";
+import {createBooking,advanceBooking,validateBookingSelection} from "./core/bookings.js";
 import {createProviderAction,updateProviderAction} from "./core/provider-actions.js";
 import {createMessage,transitionMessage,buildProviderRequestMessage} from "./core/messaging.js";
 import {verifyWebhookSignature,normalizeInbound,buildOutboundPayload,webhookChallenge,sendWhatsAppText} from "./core/whatsapp.js";
@@ -206,6 +206,7 @@ app.post("/api/bookings",async(req,res)=>{
     const service=(await serviceStore.all()).find(x=>x.id===body.serviceId);
     if(!provider)return res.status(404).json({error:"provider not found"});
     if(!service)return res.status(404).json({error:"service not found"});
+    validateBookingSelection({request,provider,service});
     const booking=createBooking({requestId:request.id,providerId:provider.id,serviceId:service.id,customer:body.customer,requestSnapshot:{message:request.message,requirements:request.requirements},providerSnapshot:{id:provider.id,name:provider.name,category:provider.category},serviceSnapshot:{id:service.id,name:service.name}});
     await bookingStore.insert(booking);
     await audit({type:"booking.created",bookingId:booking.id,requestId:request.id,status:booking.status});
