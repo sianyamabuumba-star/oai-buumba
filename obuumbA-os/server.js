@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import fs from "fs/promises";
 import {fileURLToPath} from "url";
+import {hasValidAdminToken} from "./core/auth.js";
 import {JsonStore} from "./core/store.js";
 import {auditEvent} from "./core/audit.js";
 import {adapters,systemStatus} from "./core/adapters.js";
@@ -12,14 +13,19 @@ import {simulateConcierge} from "./core/simulation.js";
 import {nextRequestState} from "./core/request-flow.js";
 import {validateProvider} from "./core/provider-onboarding.js";
 import {createService,isAvailable,checkRequirements} from "./core/services.js";
-import {createBooking,advanceBooking} from "./core/bookings.js";
+import {createBooking,advanceBooking,validateBookingSelection} from "./core/bookings.js";
 import {createProviderAction,updateProviderAction} from "./core/provider-actions.js";
 import {createMessage,transitionMessage,buildProviderRequestMessage} from "./core/messaging.js";
 import {verifyWebhookSignature,normalizeInbound,buildOutboundPayload,webhookChallenge,sendWhatsAppText} from "./core/whatsapp.js";
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
-app.use(express.json({limit:"64kb"}));
+app.use(express.json({
+  limit:"64kb",
+  verify(req,res,buf){
+    if(req.method==="POST" && req.originalUrl==="/webhooks/whatsapp") req.rawBody=Buffer.from(buf);
+  }
+}));
 app.use(express.static(__dirname));
 
 const dataDir=path.join(__dirname,"data","runtime");
@@ -43,7 +49,7 @@ app.get("/webhooks/whatsapp",async(req,res)=>{
   challenge===null?res.status(403).send("forbidden"):res.status(200).send(challenge);
 });
 app.post("/webhooks/whatsapp",async(req,res)=>{
-  const raw=JSON.stringify(req.body||{});
+  const raw=req.rawBody;
   const signature=req.get("x-hub-signature-256");
   if(!verifyWebhookSignature(raw,signature,process.env.WHATSAPP_APP_SECRET)) return res.status(401).json({error:"invalid signature"});
   const inbound=normalizeInbound(req.body);
@@ -79,6 +85,18 @@ app.get("/api/health",async(req,res)=>{
 
 app.get("/api/system/status",async(req,res)=>{
   res.json({service:"O'BUUMBA OS",persistence:"READY",adapters:systemStatus()});
+});
+
+// Keep health/status public for deployment checks. Protect customer and owner APIs.
+app.use("/api", (req,res,next)=>{
+  const expectedToken=process.env.ADMIN_API_TOKEN;
+  if(!expectedToken && process.env.NODE_ENV!=="production") return next();
+  if(!expectedToken) return res.status(503).json({error:"Admin API disabled: configure ADMIN_API_TOKEN before production use."});
+  if(!hasValidAdminToken(req.get("authorization"),expectedToken)) {
+    res.set("WWW-Authenticate","Bearer");
+    return res.status(401).json({error:"Admin authorization required."});
+  }
+  next();
 });
 
 app.post("/api/requests",async(req,res)=>{
@@ -193,6 +211,7 @@ app.post("/api/bookings",async(req,res)=>{
     const service=(await serviceStore.all()).find(x=>x.id===body.serviceId);
     if(!provider)return res.status(404).json({error:"provider not found"});
     if(!service)return res.status(404).json({error:"service not found"});
+    validateBookingSelection({request,provider,service});
     const booking=createBooking({requestId:request.id,providerId:provider.id,serviceId:service.id,customer:body.customer,requestSnapshot:{message:request.message,requirements:request.requirements},providerSnapshot:{id:provider.id,name:provider.name,category:provider.category},serviceSnapshot:{id:service.id,name:service.name}});
     await bookingStore.insert(booking);
     await audit({type:"booking.created",bookingId:booking.id,requestId:request.id,status:booking.status});
@@ -308,4 +327,4 @@ app.post("/api/tasks/:id/verify",async(req,res)=>{
 
 app.get("/api/audit",async(req,res)=>res.json((await auditStore.all()).slice(0,100)));
 
-app.listen(process.env.PORT||3000,()=>console.log("O'BUUMBA OS running"));
+app.listen(process.env.PORT||3000,process.env.HOST||"127.0.0.1",()=>console.log("O'BUUMBA OS running"));

@@ -61,3 +61,7 @@ The portable local core is the fallback. The next production integrations are:
 9. End-to-end pilot testing
 
 See `docs/AUTOPILOT_SPEC.md`, `docs/OWNER_ACTIONS.md`, `docs/API_CONTRACT.md`, and `docs/TEST_PLAN.md`.
+
+## Security baseline
+
+The server binds to localhost by default. Non-health API routes can be protected with `ADMIN_API_TOKEN`; production mode denies protected API access if that secret is missing. See [docs/SECURITY.md](docs/SECURITY.md) before exposing the service to a network.

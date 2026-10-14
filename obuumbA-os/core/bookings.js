@@ -6,6 +6,17 @@ export const BOOKING_STATES=[
   "CONFIRMED","IN_PROGRESS","COMPLETED","CANCELLED","FAILED"
 ];
 
+export function validateBookingSelection({request,provider,service}={}) {
+  if(!request?.id) throw new Error("request not found");
+  if(!provider?.id) throw new Error("provider not found");
+  if(!service?.id) throw new Error("service not found");
+  if(provider.verified!==true || provider.verification?.status!=="VERIFIED")
+    throw new Error("provider must be verified before booking");
+  if(service.providerId!==provider.id)
+    throw new Error("service does not belong to provider");
+  return true;
+}
+
 export function createBooking(input){
   if(!input?.requestId) throw new Error("requestId required");
   if(!input?.providerId) throw new Error("providerId required");
