@@ -11,8 +11,15 @@ import {canTransition} from "../core/request-flow.js";
 import {validateProvider} from "../core/provider-onboarding.js";
 import {createService,isAvailable} from "../core/services.js";
 import {matchProviders} from "../core/match.js";
+import {hasValidAdminToken} from "../core/auth.js";
 
 const dir=await fs.mkdtemp(path.join(os.tmpdir(),"obuumba-"));
+
+assert.equal(hasValidAdminToken("Bearer test-token","test-token"),true);
+assert.equal(hasValidAdminToken("Bearer wrong-token","test-token"),false);
+assert.equal(hasValidAdminToken(undefined,"test-token"),false);
+assert.equal(hasValidAdminToken("test-token","test-token"),false);
+assert.equal(hasValidAdminToken("Bearer test-token",""),false);
 const taskStore=new JsonStore(path.join(dir,"tasks.json"));
 const auditStore=new JsonStore(path.join(dir,"audit.json"));
 const audit=event=>auditStore.insert(event);
@@ -44,7 +51,7 @@ assert.equal(provider.verified,true);
 assert.equal(provider.verification.status,"VERIFIED");
 assert.throws(()=>validateProvider({name:"Bad",category:"Transport",verification:{status:"UNKNOWN"}}));
 
-const service=createService({providerId:provider.id,name:"Airport Pickup",tags:["airport pickup"],availability:{mode:"SCHEDULED",rules:[{day:"wed",start:"06:00",end:"22:00"}]}});
+const service=createService({providerId:provider.id,name:"Airport Pickup",tags:["transport","airport pickup"],availability:{mode:"SCHEDULED",rules:[{day:"wed",start:"06:00",end:"22:00"}]}});
 assert.equal(service.providerId,provider.id);
 assert.equal(isAvailable(service,"2026-09-30T19:00:00").status,"AVAILABLE");
 assert.equal(isAvailable(service,"2026-10-01T19:00:00").status,"UNAVAILABLE");
