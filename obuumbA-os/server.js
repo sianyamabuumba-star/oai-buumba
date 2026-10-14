@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import fs from "fs/promises";
 import {fileURLToPath} from "url";
+import {hasValidAdminToken} from "./core/auth.js";
 import {JsonStore} from "./core/store.js";
 import {auditEvent} from "./core/audit.js";
 import {adapters,systemStatus} from "./core/adapters.js";
@@ -79,6 +80,18 @@ app.get("/api/health",async(req,res)=>{
 
 app.get("/api/system/status",async(req,res)=>{
   res.json({service:"O'BUUMBA OS",persistence:"READY",adapters:systemStatus()});
+});
+
+// Keep health/status public for deployment checks. Protect customer and owner APIs.
+app.use("/api", (req,res,next)=>{
+  const expectedToken=process.env.ADMIN_API_TOKEN;
+  if(!expectedToken && process.env.NODE_ENV!=="production") return next();
+  if(!expectedToken) return res.status(503).json({error:"Admin API disabled: configure ADMIN_API_TOKEN before production use."});
+  if(!hasValidAdminToken(req.get("authorization"),expectedToken)) {
+    res.set("WWW-Authenticate","Bearer");
+    return res.status(401).json({error:"Admin authorization required."});
+  }
+  next();
 });
 
 app.post("/api/requests",async(req,res)=>{
@@ -308,4 +321,4 @@ app.post("/api/tasks/:id/verify",async(req,res)=>{
 
 app.get("/api/audit",async(req,res)=>res.json((await auditStore.all()).slice(0,100)));
 
-app.listen(process.env.PORT||3000,()=>console.log("O'BUUMBA OS running"));
+app.listen(process.env.PORT||3000,process.env.HOST||"127.0.0.1",()=>console.log("O'BUUMBA OS running"));
