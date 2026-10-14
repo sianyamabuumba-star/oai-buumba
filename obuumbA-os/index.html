@@ -22,7 +22,20 @@ body{margin:0;background:#08070d;color:#f5f1e8;font:15px system-ui}main{max-widt
 <p class="muted small">Current runtime: persistent local JSON. External adapters are intentionally BLOCKED until connected. This prevents the system from pretending that a live service exists when it does not.</p>
 <script>
 const $=id=>document.getElementById(id);
-async function api(path,opt){const r=await fetch(path,opt);if(!r.ok)throw new Error(await r.text());return r.json()}
+let authPromptPromise=null;
+async function api(path,opt={}){
+ let token=sessionStorage.getItem("obuumba_admin_token")||"";
+ const send=()=>fetch(path,{...opt,headers:{...(opt.headers||{}),...(token?{Authorization:"Bearer "+token}:{})}});
+ let r=await send();
+ if(r.status===401&&!token){
+  if(!authPromptPromise)authPromptPromise=Promise.resolve(prompt("Enter O'BUUMBA OS admin API token"));
+  token=(await authPromptPromise)||"";
+  authPromptPromise=null;
+  if(token){sessionStorage.setItem("obuumba_admin_token",token);r=await send()}
+ }
+ if(!r.ok)throw new Error(await r.text());
+ return r.json()
+}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function pill(x){return '<span class="pill '+(x.status==="READY"||x.status==="DONE"?'ok':'warn')+'">'+esc(x.name||x.service)+': '+esc(x.status)+'</span>'}
 async function boot(){try{const s=await api('/api/system/status');$("system").innerHTML=s.adapters.map(pill).join("");$("owner").innerHTML='<div class="owner"><b>Owner action required only for:</b><br>'+s.adapters.filter(x=>x.status==="BLOCKED").map(x=>esc(x.reason)).join("<br>")+'</div>'}catch(e){$("system").innerHTML='<span class="pill bad">API: OFFLINE</span>'}
