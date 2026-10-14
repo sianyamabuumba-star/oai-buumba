@@ -12,6 +12,7 @@ import {validateProvider} from "../core/provider-onboarding.js";
 import {createService,isAvailable} from "../core/services.js";
 import {matchProviders} from "../core/match.js";
 import {hasValidAdminToken} from "../core/auth.js";
+import {validateBookingSelection} from "../core/bookings.js";
 
 const dir=await fs.mkdtemp(path.join(os.tmpdir(),"obuumba-"));
 
@@ -50,6 +51,14 @@ const provider=validateProvider({name:"Test Transfer",category:"Transport",verif
 assert.equal(provider.verified,true);
 assert.equal(provider.verification.status,"VERIFIED");
 assert.throws(()=>validateProvider({name:"Bad",category:"Transport",verification:{status:"UNKNOWN"}}));
+
+const bookingRequest={id:"request-1"};
+const verifiedProvider={id:"provider-1",verified:true,verification:{status:"VERIFIED"}};
+const matchingService={id:"service-1",providerId:"provider-1"};
+assert.equal(validateBookingSelection({request:bookingRequest,provider:verifiedProvider,service:matchingService}),true);
+assert.throws(()=>validateBookingSelection({request:bookingRequest,provider:{...verifiedProvider,verified:false},service:matchingService}),/verified/);
+assert.throws(()=>validateBookingSelection({request:bookingRequest,provider:verifiedProvider,service:{...matchingService,providerId:"provider-2"}}),/does not belong/);
+assert.throws(()=>validateBookingSelection({request:bookingRequest,provider:verifiedProvider,service:null}),/service not found/);
 
 const service=createService({providerId:provider.id,name:"Airport Pickup",tags:["transport","airport pickup"],availability:{mode:"SCHEDULED",rules:[{day:"wed",start:"06:00",end:"22:00"}]}});
 assert.equal(service.providerId,provider.id);
