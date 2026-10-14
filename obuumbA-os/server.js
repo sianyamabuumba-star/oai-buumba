@@ -20,7 +20,12 @@ import {verifyWebhookSignature,normalizeInbound,buildOutboundPayload,webhookChal
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
-app.use(express.json({limit:"64kb"}));
+app.use(express.json({
+  limit:"64kb",
+  verify(req,res,buf){
+    if(req.method==="POST" && req.originalUrl==="/webhooks/whatsapp") req.rawBody=Buffer.from(buf);
+  }
+}));
 app.use(express.static(__dirname));
 
 const dataDir=path.join(__dirname,"data","runtime");
@@ -44,7 +49,7 @@ app.get("/webhooks/whatsapp",async(req,res)=>{
   challenge===null?res.status(403).send("forbidden"):res.status(200).send(challenge);
 });
 app.post("/webhooks/whatsapp",async(req,res)=>{
-  const raw=JSON.stringify(req.body||{});
+  const raw=req.rawBody;
   const signature=req.get("x-hub-signature-256");
   if(!verifyWebhookSignature(raw,signature,process.env.WHATSAPP_APP_SECRET)) return res.status(401).json({error:"invalid signature"});
   const inbound=normalizeInbound(req.body);
