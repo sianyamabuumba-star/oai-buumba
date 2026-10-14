@@ -13,8 +13,19 @@ import {createService,isAvailable} from "../core/services.js";
 import {matchProviders} from "../core/match.js";
 import {hasValidAdminToken} from "../core/auth.js";
 import {validateBookingSelection} from "../core/bookings.js";
+import {verifyWebhookSignature} from "../core/whatsapp.js";
+import crypto from "node:crypto";
 
 const dir=await fs.mkdtemp(path.join(os.tmpdir(),"obuumba-"));
+
+const webhookSecret="test-webhook-secret";
+const exactWebhookBody='{ "object": "whatsapp_business_account", "entry": [] }';
+const webhookSignature="sha256="+crypto.createHmac("sha256",webhookSecret).update(exactWebhookBody).digest("hex");
+assert.equal(verifyWebhookSignature(exactWebhookBody,webhookSignature,webhookSecret),true);
+assert.equal(verifyWebhookSignature(JSON.stringify(JSON.parse(exactWebhookBody)),webhookSignature,webhookSecret),false);
+assert.equal(verifyWebhookSignature(exactWebhookBody,webhookSignature,"wrong-secret"),false);
+assert.equal(verifyWebhookSignature(exactWebhookBody,null,webhookSecret),false);
+
 
 assert.equal(hasValidAdminToken("Bearer test-token","test-token"),true);
 assert.equal(hasValidAdminToken("Bearer wrong-token","test-token"),false);
