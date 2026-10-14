@@ -27,6 +27,7 @@ async function api(path,opt={}){
  let token=sessionStorage.getItem("obuumba_admin_token")||"";
  const send=()=>fetch(path,{...opt,headers:{...(opt.headers||{}),...(token?{Authorization:"Bearer "+token}:{})}});
  let r=await send();
+ if(r.status===401&&token){sessionStorage.removeItem("obuumba_admin_token");token="";}
  if(r.status===401&&!token){
   if(!authPromptPromise)authPromptPromise=Promise.resolve(prompt("Enter O'BUUMBA OS admin API token"));
   token=(await authPromptPromise)||"";
