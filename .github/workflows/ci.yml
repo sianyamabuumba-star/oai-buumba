@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "obuumbA-os/**"
+      - "website/**"
       - ".github/workflows/ci.yml"
   pull_request:
     branches: [main]
@@ -39,3 +40,13 @@ jobs:
         run: npm install --ignore-scripts --no-audit --no-fund
       - name: Run self-test
         run: npm test
+
+  website-check:
+    name: Static website checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Validate public website
+        run: python3 website/tests/check_site.py
