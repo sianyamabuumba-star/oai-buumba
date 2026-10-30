@@ -15,6 +15,7 @@ import {hasValidAdminToken} from "../core/auth.js";
 import {validateBookingSelection} from "../core/bookings.js";
 import {verifyWebhookSignature} from "../core/whatsapp.js";
 import crypto from "node:crypto";
+import {createSourceRecord,normalizeSourceUrl,canTransitionSource,transitionSource} from "../core/source-records.js";
 
 const dir=await fs.mkdtemp(path.join(os.tmpdir(),"obuumba-"));
 
@@ -88,4 +89,28 @@ const stopped=await runTask(taskStore,audit,adapters,blocked);
 assert.equal(stopped.status,"NEEDS_OWNER");
 assert.equal((await taskStore.all()).length,2);
 assert.ok((await auditStore.all()).length>=4);
+
+const source = createSourceRecord({
+  kind:"URL",url:"https://example.com/research#section",
+  title:"Research source",notes:"Compare this with the O'BUUMBA plan"
+},{ownerId:"owner-1",now:new Date("2026-10-30T12:00:00.000Z")});
+assert.equal(source.status,"CAPTURED");
+assert.equal(source.ownerId,"owner-1");
+assert.equal(source.originalUrl,"https://example.com/research#section");
+assert.equal(source.createdAt,"2026-10-30T12:00:00.000Z");
+assert.equal(canTransitionSource("CAPTURED","QUEUED"),true);
+assert.equal(canTransitionSource("CAPTURED","ANALYSED"),false);
+assert.throws(()=>normalizeSourceUrl("file:///etc/passwd"),/HTTP and HTTPS/);
+assert.throws(()=>normalizeSourceUrl("https://user:pass@example.com"),/embedded credentials/);
+assert.throws(()=>createSourceRecord({kind:"URL",url:"not a url"},{ownerId:"owner-1"}));
+assert.throws(()=>createSourceRecord({ownerId:"attacker",kind:"TEXT"},{ownerId:"owner-1"}),/authenticated server context/);
+assert.throws(()=>createSourceRecord({kind:"TEXT",url:"https://example.com"},{ownerId:"owner-1"}),/only valid for URL/);
+const queuedSource=transitionSource(source,"QUEUED");
+const fetchedSource=transitionSource(queuedSource,"FETCHED",{contentHash:"sha256:example",sourceType:"text/html"});
+assert.equal(fetchedSource.status,"FETCHED");
+assert.equal(fetchedSource.id,source.id);
+assert.equal(fetchedSource.ownerId,source.ownerId);
+assert.throws(()=>transitionSource(source,"ANALYSED"),/invalid source transition/);
+assert.throws(()=>transitionSource(queuedSource,"FETCHED",{ownerId:"attacker"}),/not writable/);
+
 console.log("O'BUUMBA OS self-test: PASS");

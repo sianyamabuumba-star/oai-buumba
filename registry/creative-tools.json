@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 1,
+  "status": "candidate_catalogue_not_connected",
+  "policy": "Tools are candidates, not endorsements or active integrations. Verify current terms, free quotas, commercial-use rights, country access, age eligibility and privacy before use.",
+  "evaluationFields": [
+    "official_url",
+    "purpose",
+    "best_use_cases",
+    "free_tier_verified_at",
+    "free_limits",
+    "paid_entry_price_and_currency",
+    "commercial_use_rights",
+    "watermark_or_attribution",
+    "export_formats",
+    "mobile_support",
+    "api_or_connector",
+    "data_training_and_privacy",
+    "country_availability",
+    "age_eligibility",
+    "test_result",
+    "recommended_alternative"
+  ],
+  "categories": [
+    {
+      "id": "design_graphics",
+      "label": "Graphic design and visual systems",
+      "tools": [
+        {
+          "id": "canva",
+          "name": "Canva",
+          "url": "https://www.canva.com/",
+          "role": "templates, brand systems, social graphics, presentations, simple websites",
+          "status": "existing_user_tool",
+          "pricing": "Free plan verified; current pricing page lists US$0 and limited AI allowance",
+          "alternative": [
+            "penpot",
+            "gimp",
+            "inkscape",
+            "krita"
+          ]
+        },
+        {
+          "id": "adobe-express",
+          "name": "Adobe Express",
+          "url": "https://www.adobe.com/express/",
+          "role": "quick brand graphics, flyers, social content",
+          "status": "existing_user_tool",
+          "pricing": "free tier and paid features; verify current limits",
+          "alternative": [
+            "canva",
+            "penpot"
+          ]
+        },
+        {
+          "id": "figma",
+          "name": "Figma",
+          "url": "https://www.figma.com/",
+          "role": "UI design, prototypes, design systems",
+          "status": "candidate",
+          "pricing": "verify current starter limits",
+          "alternative": [
+            "penpot"
+          ]
+        },
+        {
+          "id": "penpot",
+          "name": "Penpot",
+          "url": "https://penpot.app/",
+          "role": "open-source interface design and prototyping",
+          "status": "candidate",
+          "pricing": "open-source option; verify hosted plan",
+          "alternative": [
+            "figma"
+          ]
+        },
+        {
+          "id": "affinity",
+          "name": "Affinity",
+          "url": "https://www.affinity.studio/",
+          "role": "professional vector, photo and layout design",
+          "status": "candidate",
+          "pricing": "verify current licensing and platform availability",
+          "alternative": [
+            "inkscape",
+            "gimp",
+            "krita"
+          ]
+        },
+        {
+          "id": "gimp",
+          "name": "GIMP",
+          "url": "https://www.gimp.org/",
+          "role": "raster photo editing",
+          "status": "candidate",
+          "pricing": "free and open source",
+          "alternative": [
+            "photopea"
+          ]
+        },
+        {
+          "id": "inkscape",
+          "name": "Inkscape",
+          "url": "https://inkscape.org/",
+          "role": "vector illustration and SVG",
+          "status": "candidate",
+          "pricing": "free and open source",
+          "alternative": [
+            "affinity"
+          ]
+        },
+        {
+          "id": "krita",
+          "name": "Krita",
+          "url": "https://krita.org/",
+          "role": "digital painting and illustration",
+          "status": "candidate",
+          "pricing": "free and open source",
+          "alternative": [
+            "gimp"
+          ]
+        },
+        {
+          "id": "photopea",
+          "name": "Photopea",
+          "url": "https://www.photopea.com/",
+          "role": "browser-based raster and PSD editing",
+          "status": "candidate",
+          "pricing": "free ad-supported option; verify terms",
+          "alternative": [
+            "gimp"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai_image",
+      "label": "AI image and visual generation",
+      "tools": [
+        {
+          "id": "google-ai-studio",
+          "name": "Google AI Studio",
+          "url": "https://aistudio.google.com/",
+          "role": "model experimentation, multimodal prompts and API prototyping",
+          "status": "existing_user_tool",
+          "pricing": "verify current model quotas and API billing separately",
+          "alternative": [
+            "local-open-models"
+          ]
+        },
+        {
+          "id": "adobe-firefly",
+          "name": "Adobe Firefly",
+          "url": "https://firefly.adobe.com/",
+          "role": "generative image and design workflows",
+          "status": "candidate",
+          "pricing": "free allowance varies; verify commercial terms",
+          "alternative": [
+            "google-ai-studio",
+            "krita"
+          ]
+        },
+        {
+          "id": "leonardo",
+          "name": "Leonardo AI",
+          "url": "https://leonardo.ai/",
+          "role": "image and visual asset generation",
+          "status": "candidate",
+          "pricing": "official page currently lists free tier with daily tokens; verify commercial-use rights",
+          "alternative": [
+            "firefly"
+          ]
+        },
+        {
+          "id": "ideogram",
+          "name": "Ideogram",
+          "url": "https://ideogram.ai/",
+          "role": "image generation and typography-led visuals",
+          "status": "candidate",
+          "pricing": "verify current free quota and rights",
+          "alternative": [
+            "leonardo"
+          ]
+        },
+        {
+          "id": "perchance",
+          "name": "Perchance",
+          "url": "https://perchance.org/",
+          "role": "community creative generators",
+          "status": "existing_user_tool",
+          "pricing": "tool-by-tool; inspect privacy, output rights and safety",
+          "alternative": [
+            "local-tools"
+          ]
+        },
+        {
+          "id": "krita-ai",
+          "name": "Krita + compatible local tools",
+          "url": "https://krita.org/",
+          "role": "manual finishing and local creative workflows",
+          "status": "candidate",
+          "pricing": "free base application; plugins/models may have separate requirements",
+          "alternative": [
+            "gimp"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video_motion",
+      "label": "Video, animation and motion",
+      "tools": [
+        {
+          "id": "capcut",
+          "name": "CapCut",
+          "url": "https://www.capcut.com/",
+          "role": "short-form video editing and captions",
+          "status": "existing_user_tool",
+          "pricing": "official page lists a free basic plan and paid tiers; features vary by region",
+          "alternative": [
+            "davinci-resolve",
+            "clipchamp"
+          ]
+        },
+        {
+          "id": "davinci-resolve",
+          "name": "DaVinci Resolve",
+          "url": "https://www.blackmagicdesign.com/products/davinciresolve",
+          "role": "professional editing, colour, audio and finishing",
+          "status": "candidate",
+          "pricing": "free edition available; hardware requirements matter",
+          "alternative": [
+            "capcut",
+            "kdenlive"
+          ]
+        },
+        {
+          "id": "kdenlive",
+          "name": "Kdenlive",
+          "url": "https://kdenlive.org/",
+          "role": "open-source video editing",
+          "status": "candidate",
+          "pricing": "free and open source",
+          "alternative": [
+            "davinci-resolve"
+          ]
+        },
+        {
+          "id": "descript",
+          "name": "Descript",
+          "url": "https://www.descript.com/",
+          "role": "transcription-led editing and podcasts",
+          "status": "candidate",
+          "pricing": "verify current free limits",
+          "alternative": [
+            "audacity",
+            "kdenlive"
+          ]
+        },
+        {
+          "id": "runway",
+          "name": "Runway",
+          "url": "https://runwayml.com/",
+          "role": "AI video generation and editing",
+          "status": "candidate",
+          "pricing": "verify current credits and commercial terms",
+          "alternative": [
+            "local-video-tools"
+          ]
+        },
+        {
+          "id": "pika",
+          "name": "Pika",
+          "url": "https://pika.art/",
+          "role": "AI video and image animation",
+          "status": "candidate",
+          "pricing": "official pricing page currently shows no recurring free credits; commercial licence excluded from free tier",
+          "alternative": [
+            "runway"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "audio_music",
+      "label": "Music, audio and voice",
+      "tools": [
+        {
+          "id": "bandlab",
+          "name": "BandLab",
+          "url": "https://www.bandlab.com/",
+          "role": "mobile-friendly music creation and collaboration",
+          "status": "candidate",
+          "pricing": "free core tier; verify current membership features",
+          "alternative": [
+            "lmms",
+            "ardour"
+          ]
+        },
+        {
+          "id": "audacity",
+          "name": "Audacity",
+          "url": "https://www.audacityteam.org/",
+          "role": "audio editing and recording",
+          "status": "candidate",
+          "pricing": "free and open source",
+          "alternative": [
+            "ocenaudio"
+          ]
+        },
+        {
+          "id": "lmms",
+          "name": "LMMS",
+          "url": "https://lmms.io/",
+          "role": "music production and sequencing",
+          "status": "candidate",
+          "pricing": "free and open source",
+          "alternative": [
+            "ardour"
+          ]
+        },
+        {
+          "id": "ardour",
+          "name": "Ardour",
+          "url": "https://ardour.org/",
+          "role": "digital audio workstation",
+          "status": "candidate",
+          "pricing": "open-source build options; verify official download model",
+          "alternative": [
+            "lmms"
+          ]
+        },
+        {
+          "id": "suno",
+          "name": "Suno",
+          "url": "https://suno.com/",
+          "role": "AI music ideation and generation",
+          "status": "existing_user_tool",
+          "pricing": "verify plan and commercial-use rights before monetising outputs",
+          "alternative": [
+            "bandlab",
+            "lmms"
+          ]
+        },
+        {
+          "id": "udio",
+          "name": "Udio",
+          "url": "https://www.udio.com/",
+          "role": "AI music ideation",
+          "status": "candidate",
+          "pricing": "verify current service terms, output rights and export options",
+          "alternative": [
+            "suno"
+          ]
+        },
+        {
+          "id": "elevenlabs",
+          "name": "ElevenLabs",
+          "url": "https://elevenlabs.io/",
+          "role": "voice, speech and audio tools",
+          "status": "candidate",
+          "pricing": "official pricing page lists free tier with 10,000 credits; commercial rights vary by plan",
+          "alternative": [
+            "audacity",
+            "open-source-tts"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "research_ai",
+      "label": "AI assistants and research",
+      "tools": [
+        {
+          "id": "chatgpt",
+          "name": "ChatGPT",
+          "url": "https://chatgpt.com/",
+          "role": "reasoning, planning, research and creative assistance",
+          "status": "existing_user_tool",
+          "pricing": "plan and usage limits vary",
+          "alternative": [
+            "gemini",
+            "claude"
+          ]
+        },
+        {
+          "id": "gemini",
+          "name": "Google Gemini",
+          "url": "https://gemini.google.com/",
+          "role": "multimodal assistant and Google ecosystem",
+          "status": "existing_user_tool",
+          "pricing": "free and paid availability varies",
+          "alternative": [
+            "chatgpt",
+            "claude"
+          ]
+        },
+        {
+          "id": "notebooklm",
+          "name": "NotebookLM",
+          "url": "https://notebooklm.google.com/",
+          "role": "source-grounded research notebooks",
+          "status": "existing_user_tool",
+          "pricing": "free and paid limits vary",
+          "alternative": [
+            "chatgpt-projects",
+            "notion"
+          ]
+        },
+        {
+          "id": "claude",
+          "name": "Claude",
+          "url": "https://claude.ai/",
+          "role": "writing, analysis and coding",
+          "status": "existing_user_tool",
+          "pricing": "free and paid limits vary",
+          "alternative": [
+            "chatgpt",
+            "gemini"
+          ]
+        },
+        {
+          "id": "google-flow",
+          "name": "Google Flow",
+          "url": "https://labs.google/fx/tools/flow",
+          "role": "AI filmmaking and visual storytelling",
+          "status": "existing_user_tool",
+          "pricing": "availability and credits vary by region and plan",
+          "alternative": [
+            "capcut",
+            "davinci-resolve"
+          ]
+        },
+        {
+          "id": "perplexity",
+          "name": "Perplexity",
+          "url": "https://www.perplexity.ai/",
+          "role": "web research and source discovery",
+          "status": "candidate",
+          "pricing": "free and paid limits vary",
+          "alternative": [
+            "search-engines"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "web_app_build",
+      "label": "Websites, apps and software",
+      "tools": [
+        {
+          "id": "github",
+          "name": "GitHub",
+          "url": "https://github.com/",
+          "role": "source control, issues and collaboration",
+          "status": "existing_user_tool",
+          "pricing": "free tier available; paid features vary",
+          "alternative": [
+            "codeberg"
+          ]
+        },
+        {
+          "id": "cloudflare",
+          "name": "Cloudflare",
+          "url": "https://www.cloudflare.com/",
+          "role": "hosting, edge functions, DNS and security",
+          "status": "candidate",
+          "pricing": "free tier available; usage limits apply",
+          "alternative": [
+            "github-pages-for-noncommercial-projects"
+          ]
+        },
+        {
+          "id": "supabase",
+          "name": "Supabase",
+          "url": "https://supabase.com/",
+          "role": "database, authentication, storage and APIs",
+          "status": "existing_user_tool",
+          "pricing": "free tier available; quotas and pausing rules apply",
+          "alternative": [
+            "self-hosted-postgres"
+          ]
+        },
+        {
+          "id": "replit",
+          "name": "Replit",
+          "url": "https://replit.com/",
+          "role": "browser-based development and deployment",
+          "status": "candidate",
+          "pricing": "verify current free limits and usage billing",
+          "alternative": [
+            "github-codespaces",
+            "local-development"
+          ]
+        },
+        {
+          "id": "base44",
+          "name": "Base44",
+          "url": "https://base44.com/",
+          "role": "AI-assisted application building",
+          "status": "candidate",
+          "pricing": "verify current credits, export and ownership terms",
+          "alternative": [
+            "replit",
+            "github"
+          ]
+        },
+        {
+          "id": "wordpress",
+          "name": "WordPress",
+          "url": "https://wordpress.org/",
+          "role": "self-hosted websites and commerce",
+          "status": "candidate",
+          "pricing": "software free; hosting/domain/payment costs may apply",
+          "alternative": [
+            "static-site"
+          ]
+        },
+        {
+          "id": "n8n",
+          "name": "n8n",
+          "url": "https://n8n.io/",
+          "role": "workflow automation",
+          "status": "candidate",
+          "pricing": "self-hosted community option; hosted plans paid",
+          "alternative": [
+            "make",
+            "custom-code"
+          ]
+        }
+      ]
+    }
+  ]
+}

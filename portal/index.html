@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#09070f">
+<title>O'BUUMBA Intelligence Portal</title>
+<style>
+:root{color-scheme:dark;--bg:#09070f;--panel:#14111d;--panel2:#1b1725;--line:#30283d;--gold:#d9b75e;--ivory:#f5f0e6;--muted:#aaa2b5;--purple:#7b5aa6}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -15%,#332348 0,transparent 40%),var(--bg);color:var(--ivory);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}.side{border-right:1px solid var(--line);padding:26px 18px;background:#0c0912}.brand{font-size:22px;letter-spacing:.13em;font-weight:850;color:var(--gold)}.tag{font-size:10px;letter-spacing:.18em;color:var(--muted);margin:3px 0 32px}.navlabel{font-size:10px;letter-spacing:.16em;color:#81788e;margin:24px 10px 8px}.nav button{display:flex;gap:12px;align-items:center;width:100%;border:0;background:transparent;color:#c8c0d1;text-align:left;padding:11px 12px;border-radius:10px;margin:3px 0}.nav button.active,.nav button:hover{background:#211a2c;color:var(--gold)}.nav .ico{width:20px;text-align:center}.sidefoot{position:sticky;top:90vh;margin-top:44px;border:1px solid var(--line);padding:12px;border-radius:12px;color:var(--muted);font-size:12px}.main{padding:30px clamp(18px,4vw,54px);max-width:1500px;width:100%;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:30px}.eyebrow{font-size:11px;letter-spacing:.17em;color:var(--gold);text-transform:uppercase}.top h1{font-size:clamp(27px,4vw,42px);line-height:1.08;margin:8px 0}.muted{color:var(--muted)}.profile{border:1px solid var(--line);background:#171320;border-radius:999px;padding:8px 13px;color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.card{background:linear-gradient(145deg,#191522,#100e17);border:1px solid var(--line);border-radius:17px;padding:20px;min-width:0}.span8{grid-column:span 8}.span4{grid-column:span 4}.span12{grid-column:span 12}.cardhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.card h2{font-size:16px;margin:0}.hint{font-size:12px;color:var(--muted)}.capture{display:grid;grid-template-columns:1fr auto;gap:10px}.field{width:100%;background:#0d0b13;border:1px solid #3a3048;border-radius:10px;color:var(--ivory);padding:13px 14px;outline:none}.field:focus{border-color:var(--gold);box-shadow:0 0 0 3px #d9b75e20}textarea.field{min-height:82px;resize:vertical}.btn{border:0;border-radius:10px;background:var(--gold);color:#17120a;font-weight:800;padding:12px 17px}.btn.secondary{background:#282132;color:var(--ivory);border:1px solid var(--line)}.formrow{display:grid;grid-template-columns:1fr 180px;gap:10px;margin-top:10px}.notice{margin-top:12px;padding:10px 12px;border-radius:10px;background:#211a2c;border:1px solid #463652;color:#c9bed4;font-size:12px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#100d17;border:1px solid var(--line);border-radius:12px;padding:14px}.stat b{display:block;font-size:26px;color:var(--gold)}.stat span{font-size:11px;color:var(--muted)}.list{display:grid;gap:10px}.source{border:1px solid var(--line);background:#100d17;border-radius:12px;padding:13px}.sourcehead{display:flex;justify-content:space-between;gap:10px}.source strong{font-size:14px;overflow-wrap:anywhere}.source a{color:var(--gold);text-decoration:none;font-size:12px;overflow-wrap:anywhere}.pill{font-size:10px;border:1px solid #574832;color:var(--gold);border-radius:999px;padding:3px 8px;white-space:nowrap;height:max-content}.source p{font-size:12px;color:var(--muted);margin:8px 0}.sourcefoot{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;color:#82798e}.tinybtn{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:7px;padding:5px 8px;font-size:11px}.empty{padding:26px;text-align:center;border:1px dashed #41364f;border-radius:12px;color:var(--muted);font-size:13px}.toolgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.tool{padding:12px;border:1px solid var(--line);border-radius:11px;background:#100d17}.tool b{display:block;font-size:13px}.tool span{font-size:11px;color:var(--muted)}.status{display:inline-flex;gap:7px;align-items:center;font-size:11px;color:#c9bed4}.dot{width:7px;height:7px;background:#b68c4c;border-radius:50%}.foot{font-size:11px;color:#82798e;margin:24px 0}.toast{position:fixed;right:20px;bottom:20px;background:#241d30;border:1px solid var(--gold);padding:12px 16px;border-radius:10px;display:none;max-width:320px}.hidden{display:none!important}
+@media(max-width:900px){.shell{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--line);padding:14px 18px}.tag{margin-bottom:12px}.nav{display:flex;overflow:auto;gap:4px}.navlabel,.sidefoot{display:none}.nav button{white-space:nowrap;width:auto}.main{padding:22px 16px}.span8,.span4{grid-column:span 12}}
+@media(max-width:540px){.top{align-items:flex-start;flex-direction:column}.capture,.formrow{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.stat{padding:10px}.stat b{font-size:21px}.toolgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side">
+  <div class="brand">O'BUUMBA</div><div class="tag">INTELLIGENCE • CREATION • EXECUTION</div>
+  <nav class="nav">
+    <div class="navlabel">WORKSPACE</div>
+    <button class="active" data-view="overview"><span class="ico">⌂</span>Overview</button>
+    <button data-view="sources"><span class="ico">↗</span>Knowledge sources</button>
+    <button data-view="skills"><span class="ico">✳</span>Skills & tools</button>
+    <button data-view="workflows"><span class="ico">⇄</span>Workflows</button>
+    <button data-view="projects"><span class="ico">▦</span>Projects</button>
+    <div class="navlabel">SYSTEM</div>
+    <button data-view="settings"><span class="ico">⚙</span>Settings & status</button>
+  </nav>
+  <div class="sidefoot"><b style="color:var(--gold)">Prototype workspace</b><br>Local browser storage only. Authentication and cloud sync are not connected yet.</div>
+</aside>
+<main class="main">
+  <header class="top"><div><div class="eyebrow">Your creative command centre</div><h1>Think clearly.<br><span style="color:var(--gold)">Build deliberately.</span></h1><div class="muted">One place to capture knowledge, discover capabilities and move projects forward.</div></div><div class="profile">◉ &nbsp; O’BUUMBA WORKSPACE</div></header>
+  <section id="view-overview">
+    <div class="grid">
+      <article class="card span8">
+        <div class="cardhead"><h2>Capture a source</h2><span class="pill">START HERE</span></div>
+        <p class="hint">Paste a public profile, website, article, documentation page or project link. Add context so it can be organised for later analysis.</p>
+        <form id="sourceForm">
+          <div class="capture"><input class="field" id="sourceUrl" type="url" placeholder="https://example.com/profile" required><button class="btn" type="submit">＋ Add source</button></div>
+          <div class="formrow"><input class="field" id="sourceTitle" placeholder="Source name (optional)"><select class="field" id="sourceType"><option value="Profile">Profile</option><option value="Website">Website</option><option value="Documentation">Documentation</option><option value="AI model">AI model</option><option value="App / platform">App / platform</option><option value="Research">Research</option><option value="Project">Project</option><option value="Other">Other</option></select></div>
+          <textarea class="field" id="sourceNotes" style="margin-top:10px" placeholder="What do you want to learn from this source? (optional)"></textarea>
+        </form>
+        <div class="notice">This first build saves the link and your notes in this browser. It does not yet fetch private pages or claim to have analysed the website. The next backend milestone adds safe page extraction and AI analysis.</div>
+      </article>
+      <article class="card span4">
+        <div class="cardhead"><h2>Workspace snapshot</h2><span class="status"><i class="dot"></i> Local mode</span></div>
+        <div class="stats"><div class="stat"><b id="sourceCount">0</b><span>Sources</span></div><div class="stat"><b>0</b><span>Connected apps</span></div><div class="stat"><b>0</b><span>Live workflows</span></div></div>
+        <p class="hint" style="margin-top:15px">Your library grows as you capture useful sources. Connections will only be marked active after setup and testing.</p>
+      </article>
+      <article class="card span8">
+        <div class="cardhead"><h2>Knowledge library</h2><input id="search" class="field" style="max-width:220px;padding:8px 10px" placeholder="Search sources…"></div>
+        <div id="sourceList" class="list"><div class="empty">No sources yet. Add a useful link above to start your library.</div></div>
+      </article>
+      <article class="card span4">
+        <div class="cardhead"><h2>Recommended next steps</h2></div>
+        <div class="list">
+          <div class="tool"><b>01 · Build your source library</b><span>Save trusted profiles, platforms and documentation.</span></div>
+          <div class="tool"><b>02 · Map your tool ecosystem</b><span>Record skills, integrations, costs and alternatives.</span></div>
+          <div class="tool"><b>03 · Turn findings into workflows</b><span>Convert useful knowledge into repeatable actions.</span></div>
+          <div class="tool"><b>04 · Connect secure storage</b><span>Add authentication and private cloud sync before using across devices.</span></div>
+        </div>
+      </article>
+      <article class="card span12"><div class="cardhead"><h2>Operating principle</h2><span class="pill">O’BUUMBA STANDARD</span></div><div style="font-size:clamp(16px,2vw,22px);font-weight:700">CAPTURE → UNDERSTAND → ORGANISE → RECOMMEND → APPROVE → EXECUTE → IMPROVE</div><p class="hint">Create. Uplift. Cockieness.</p></article>
+    </div>
+  </section>
+  <section id="view-sources" class="hidden"><article class="card"><div class="cardhead"><h2>Knowledge sources</h2><button class="btn secondary" onclick="document.querySelector('[data-view=overview]').click()">＋ Capture source</button></div><div id="sourceList2" class="list"></div></article></section>
+  <section id="view-skills" class="hidden"><article class="card"><div class="cardhead"><h2>Skills, apps & connectors</h2><span class="pill">DIRECTORY FOUNDATION</span></div><p class="hint">These are catalogue categories, not connected services. Each entry will later carry official links, capabilities, pricing, permissions, age requirements and setup status.</p><div class="toolgrid"><div class="tool"><b>AI models & assistants</b><span>Model providers, chat assistants, local models</span></div><div class="tool"><b>Design & creative</b><span>Graphic design, video, audio, 3D, publishing</span></div><div class="tool"><b>Development</b><span>Git, hosting, databases, APIs, app builders</span></div><div class="tool"><b>Research & learning</b><span>Knowledge bases, browsers, documents, courses</span></div><div class="tool"><b>Marketing & business</b><span>CRM, social publishing, analytics, sales</span></div><div class="tool"><b>Automation</b><span>Triggers, workflows, scheduled processes</span></div></div></article></section>
+  <section id="view-workflows" class="hidden"><article class="card"><div class="cardhead"><h2>Workflow library</h2><span class="pill">FOUNDATION</span></div><div class="toolgrid"><div class="tool"><b>Source intelligence</b><span>Capture → validate → extract → analyse → cite → save</span></div><div class="tool"><b>Tool evaluation</b><span>Discover → compare → cost-check → permissions → recommend</span></div><div class="tool"><b>Creative project</b><span>Brief → research → concept → create → review → deliver</span></div><div class="tool"><b>Weekly operations</b><span>Review → prioritise → schedule → execute → measure</span></div></div></article></section>
+  <section id="view-projects" class="hidden"><article class="card"><div class="cardhead"><h2>O’BUUMBA projects</h2><span class="pill">PORTFOLIO MAP</span></div><div class="toolgrid"><div class="tool"><b>O’BUUMBA Studio</b><span>Graphic design, branding and visual communication</span></div><div class="tool"><b>O’BUUMBA Digital</b><span>Websites, applications and digital experiences</span></div><div class="tool"><b>O’BUUMBA Technologies</b><span>AI, automation and software experiments</span></div><div class="tool"><b>O’BUUMBA Media & Music</b><span>Storytelling, sound, video and creative production</span></div><div class="tool"><b>O’BUUMBA Salon</b><span>Beauty and personal care business concept</span></div><div class="tool"><b>O’BUUMBA Impact</b><span>Community, education and service initiatives</span></div></div></article></section>
+  <section id="view-settings" class="hidden"><article class="card"><div class="cardhead"><h2>System status</h2><span class="pill">HONEST STATUS</span></div><div class="list"><div class="tool"><b>Source capture</b><span>Working locally in this browser</span></div><div class="tool"><b>Cloud account and login</b><span>Not connected — requires secure authentication and database setup</span></div><div class="tool"><b>AI source analysis</b><span>Not connected — requires a server-side model adapter</span></div><div class="tool"><b>External app connectors</b><span>Catalogue foundation only — no external accounts connected</span></div><div class="tool"><b>Data portability</b><span>Export your local source list as JSON using the button below</span></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn secondary" id="exportBtn">Export my sources</button><button class="tinybtn" id="clearBtn">Clear local source list</button></div><p class="hint">Do not save passwords, API keys, private documents or sensitive personal information in this prototype.</p></article></section>
+  <div class="foot">O’BUUMBA Intelligence Portal · Foundation prototype · Private cloud login and AI analysis are future milestones, not active features.</div>
+</main></div><div id="toast" class="toast" role="status"></div>
+<script>
+const KEY="obuumba.portal.sources.v1";
+const $=id=>document.getElementById(id);
+let sources=loadSources();
+function loadSources(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch{return []}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(sources));render()}
+function toast(msg){const t=$("toast");t.textContent=msg;t.style.display="block";setTimeout(()=>t.style.display="none",2600)}
+function safeUrl(value){try{const u=new URL(value);return ["http:","https:"].includes(u.protocol)?u:null}catch{return null}}
+function render(){
+ $("sourceCount").textContent=sources.length;
+ const q=($("search").value||"").toLowerCase();
+ const rows=sources.filter(s=>(s.title+" "+s.url+" "+s.type+" "+s.notes).toLowerCase().includes(q));
+ const markup=rows.length?rows.map(s=>'<div class="source"><div class="sourcehead"><strong>'+esc(s.title)+'</strong><span class="pill">'+esc(s.type)+'</span></div><a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.url)+'</a>'+(s.notes?'<p>'+esc(s.notes)+'</p>':'')+'<div class="sourcefoot"><span>Saved '+new Date(s.createdAt).toLocaleString()+' · Not yet analysed</span><button class="tinybtn" data-remove="'+esc(s.id)+'">Remove</button></div></div>').join(""):'<div class="empty">No matching sources. Add a link or change your search.</div>';
+ $("sourceList").innerHTML=markup;$("sourceList2").innerHTML=markup;
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("sourceForm").addEventListener("submit",e=>{
+ e.preventDefault();const u=safeUrl($("sourceUrl").value.trim());if(!u){toast("Enter a valid public HTTP or HTTPS link.");return}
+ if(sources.some(s=>s.url===u.href)){toast("That source is already in your library.");return}
+ sources.unshift({id:crypto.randomUUID(),url:u.href,title:$("sourceTitle").value.trim()||u.hostname,type:$("sourceType").value,notes:$("sourceNotes").value.trim(),createdAt:new Date().toISOString()});
+ persist();$("sourceForm").reset();toast("Source saved in this browser. Analysis is not connected yet.");
+});
+$("search").addEventListener("input",render);
+document.addEventListener("click",e=>{const b=e.target.closest("[data-remove]");if(b){sources=sources.filter(s=>s.id!==b.dataset.remove);persist();toast("Source removed from this browser.")}});
+document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll("main section[id^=view-]").forEach(s=>s.classList.toggle("hidden",s.id!=="view-"+b.dataset.view));}));
+$("exportBtn").addEventListener("click",()=>{const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),sources},null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="obuumba-sources.json";a.click();URL.revokeObjectURL(a.href);toast("Source export prepared.")});
+$("clearBtn").addEventListener("click",()=>{if(confirm("Remove all locally saved sources from this browser?")){sources=[];persist();toast("Local source list cleared.")}});
+render();
+</script>
+</body></html>

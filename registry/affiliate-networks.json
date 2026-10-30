@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "status": "research_queue_not_endorsed",
+  "verificationRequired": [
+    "official_domain_and_legal_entity",
+    "country_and_product_eligibility",
+    "age_and_guardian_requirements",
+    "commission_and_attribution_terms",
+    "payout_method_available_in_zambia",
+    "minimum_payout_and_fees",
+    "tax_and_kyc_rules",
+    "traffic_and_disclosure_policy",
+    "last_verified_at"
+  ],
+  "networks": [
+    {
+      "id": "awin",
+      "name": "Awin",
+      "official": "https://www.awin.com/",
+      "status": "verify_current_terms"
+    },
+    {
+      "id": "cj",
+      "name": "CJ Affiliate",
+      "official": "https://www.cj.com/",
+      "status": "verify_current_terms"
+    },
+    {
+      "id": "impact",
+      "name": "impact.com",
+      "official": "https://impact.com/",
+      "status": "verify_current_terms"
+    },
+    {
+      "id": "partnerstack",
+      "name": "PartnerStack",
+      "official": "https://partnerstack.com/",
+      "status": "verify_current_terms"
+    },
+    {
+      "id": "rakuten-advertising",
+      "name": "Rakuten Advertising",
+      "official": "https://rakutenadvertising.com/",
+      "status": "verify_current_terms"
+    }
+  ],
+  "warning": "Directory entries are research leads, not approval, eligibility confirmation or income guarantees. Never pay an upfront fee to unlock commissions. Do not create accounts or accept contracts on behalf of a minor."
+}
