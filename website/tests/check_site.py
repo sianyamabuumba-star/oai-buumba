@@ -81,10 +81,13 @@ def main():
         errors.append("A meta description is required")
     if not audit.viewport_seen:
         errors.append("A mobile viewport meta tag is required")
-    for required in ("https://wa.me/260776745837", "mailto:sianyamabuumba@gmail.com",
+    for required in ("mailto:sianyamabuumba@gmail.com",
                      "Livingstone, Zambia", "CREATE. UPLIFT. COCKIENESS."):
         if required not in html:
             errors.append("Required public content/link missing: " + required)
+
+    if "260776745837" in html or "wa.me/" in html:
+        errors.append("Do not publish a personal phone number; use a managed business contact channel")
 
     if errors:
         print("O'BUUMBA website checks: FAIL")
