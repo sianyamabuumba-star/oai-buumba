@@ -91,9 +91,9 @@ assert.equal((await taskStore.all()).length,2);
 assert.ok((await auditStore.all()).length>=4);
 
 const source = createSourceRecord({
-  ownerId:"owner-1",kind:"URL",url:"https://example.com/research#section",
+  kind:"URL",url:"https://example.com/research#section",
   title:"Research source",notes:"Compare this with the O'BUUMBA plan"
-},new Date("2026-10-30T12:00:00.000Z"));
+},{ownerId:"owner-1",now:new Date("2026-10-30T12:00:00.000Z")});
 assert.equal(source.status,"CAPTURED");
 assert.equal(source.ownerId,"owner-1");
 assert.equal(source.originalUrl,"https://example.com/research#section");
@@ -102,8 +102,9 @@ assert.equal(canTransitionSource("CAPTURED","QUEUED"),true);
 assert.equal(canTransitionSource("CAPTURED","ANALYSED"),false);
 assert.throws(()=>normalizeSourceUrl("file:///etc/passwd"),/HTTP and HTTPS/);
 assert.throws(()=>normalizeSourceUrl("https://user:pass@example.com"),/embedded credentials/);
-assert.throws(()=>createSourceRecord({ownerId:"owner-1",kind:"URL",url:"not a url"}));
-assert.throws(()=>createSourceRecord({ownerId:"owner-1",kind:"TEXT",url:"https://example.com"}),/only valid for URL/);
+assert.throws(()=>createSourceRecord({kind:"URL",url:"not a url"},{ownerId:"owner-1"}));
+assert.throws(()=>createSourceRecord({ownerId:"attacker",kind:"TEXT"},{ownerId:"owner-1"}),/authenticated server context/);
+assert.throws(()=>createSourceRecord({kind:"TEXT",url:"https://example.com"},{ownerId:"owner-1"}),/only valid for URL/);
 const queuedSource=transitionSource(source,"QUEUED");
 const fetchedSource=transitionSource(queuedSource,"FETCHED",{contentHash:"sha256:example",sourceType:"text/html"});
 assert.equal(fetchedSource.status,"FETCHED");
