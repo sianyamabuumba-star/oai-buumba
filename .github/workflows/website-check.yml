@@ -1,0 +1,28 @@
+name: O'BUUMBA Website Checks
+
+on:
+  push:
+    paths:
+      - "website/**"
+      - ".github/workflows/website-check.yml"
+  pull_request:
+    paths:
+      - "website/**"
+      - ".github/workflows/website-check.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: obuumbA-website-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Validate static website
+        run: python3 website/tests/check_site.py
