@@ -345,4 +345,8 @@ app.post("/api/tasks/:id/verify",async(req,res)=>{
 
 app.get("/api/audit",async(req,res)=>res.json((await auditStore.all()).slice(0,100)));
 
-app.listen(process.env.PORT||3000,process.env.HOST||"127.0.0.1",()=>console.log("O'BUUMBA OS running"));
+export { app };
+
+if (process.env.NODE_ENV !== "test") {
+  app.listen(process.env.PORT||3000,process.env.HOST||"127.0.0.1",()=>console.log("O'BUUMBA OS running"));
+}
