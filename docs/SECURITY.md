@@ -2,6 +2,8 @@
 
 ## Current protection
 
+- Runtime JSON records are explicitly blocked from the static-file server at `/data/runtime/*`; only the public demo provider directory is served as static data.
+
 - The server binds to `127.0.0.1` by default. Set `HOST=0.0.0.0` only when deploying behind an appropriate network boundary.
 - `/api/health` and `/api/system/status` remain public for deployment checks.
 - Other `/api/*` endpoints require `Authorization: Bearer <ADMIN_API_TOKEN>` whenever a token is configured.
