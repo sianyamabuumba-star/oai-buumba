@@ -11,8 +11,27 @@ import {canTransition} from "../core/request-flow.js";
 import {validateProvider} from "../core/provider-onboarding.js";
 import {createService,isAvailable} from "../core/services.js";
 import {matchProviders} from "../core/match.js";
+import {hasValidAdminToken} from "../core/auth.js";
+import {validateBookingSelection} from "../core/bookings.js";
+import {verifyWebhookSignature} from "../core/whatsapp.js";
+import crypto from "node:crypto";
 
 const dir=await fs.mkdtemp(path.join(os.tmpdir(),"obuumba-"));
+
+const webhookSecret="test-webhook-secret";
+const exactWebhookBody='{ "object": "whatsapp_business_account", "entry": [] }';
+const webhookSignature="sha256="+crypto.createHmac("sha256",webhookSecret).update(exactWebhookBody).digest("hex");
+assert.equal(verifyWebhookSignature(exactWebhookBody,webhookSignature,webhookSecret),true);
+assert.equal(verifyWebhookSignature(JSON.stringify(JSON.parse(exactWebhookBody)),webhookSignature,webhookSecret),false);
+assert.equal(verifyWebhookSignature(exactWebhookBody,webhookSignature,"wrong-secret"),false);
+assert.equal(verifyWebhookSignature(exactWebhookBody,null,webhookSecret),false);
+
+
+assert.equal(hasValidAdminToken("Bearer test-token","test-token"),true);
+assert.equal(hasValidAdminToken("Bearer wrong-token","test-token"),false);
+assert.equal(hasValidAdminToken(undefined,"test-token"),false);
+assert.equal(hasValidAdminToken("test-token","test-token"),false);
+assert.equal(hasValidAdminToken("Bearer test-token",""),false);
 const taskStore=new JsonStore(path.join(dir,"tasks.json"));
 const auditStore=new JsonStore(path.join(dir,"audit.json"));
 const audit=event=>auditStore.insert(event);
@@ -44,7 +63,15 @@ assert.equal(provider.verified,true);
 assert.equal(provider.verification.status,"VERIFIED");
 assert.throws(()=>validateProvider({name:"Bad",category:"Transport",verification:{status:"UNKNOWN"}}));
 
-const service=createService({providerId:provider.id,name:"Airport Pickup",tags:["airport pickup"],availability:{mode:"SCHEDULED",rules:[{day:"wed",start:"06:00",end:"22:00"}]}});
+const bookingRequest={id:"request-1"};
+const verifiedProvider={id:"provider-1",verified:true,verification:{status:"VERIFIED"}};
+const matchingService={id:"service-1",providerId:"provider-1"};
+assert.equal(validateBookingSelection({request:bookingRequest,provider:verifiedProvider,service:matchingService}),true);
+assert.throws(()=>validateBookingSelection({request:bookingRequest,provider:{...verifiedProvider,verified:false},service:matchingService}),/verified/);
+assert.throws(()=>validateBookingSelection({request:bookingRequest,provider:verifiedProvider,service:{...matchingService,providerId:"provider-2"}}),/does not belong/);
+assert.throws(()=>validateBookingSelection({request:bookingRequest,provider:verifiedProvider,service:null}),/service not found/);
+
+const service=createService({providerId:provider.id,name:"Airport Pickup",tags:["transport","airport pickup"],availability:{mode:"SCHEDULED",rules:[{day:"wed",start:"06:00",end:"22:00"}]}});
 assert.equal(service.providerId,provider.id);
 assert.equal(isAvailable(service,"2026-09-30T19:00:00").status,"AVAILABLE");
 assert.equal(isAvailable(service,"2026-10-01T19:00:00").status,"UNAVAILABLE");
