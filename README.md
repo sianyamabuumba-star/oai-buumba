@@ -2,11 +2,27 @@
 
 Universal human + AI orchestration system for O'BUUMBA.
 
+## O'BUUMBA ONE — master ecosystem
+
+The O'BUUMBA ONE architecture coordinates the creative, business, media, software and knowledge portfolio while keeping this repository as the technical source of truth.
+
+Start here: [O'BUUMBA ONE Master Ecosystem Architecture](docs/O_BUUMBA_ONE_MASTER_PLAN.md).
+
+The master plan defines:
+- Business and capability domains.
+- System boundaries and sources of truth.
+- Tool/provider evaluation and readiness vocabulary.
+- Project portfolio and repository structure.
+- Delivery lifecycle and roadmap.
+- Security, software supply-chain and privacy baseline.
+
+A listed tool or project is not automatically registered, connected, approved or live. See the readiness vocabulary in the master plan.
+
 ## Current build
 
 **Core loop:** CAPTURE → UNDERSTAND → PLAN → EXECUTE → VERIFY → LOG → IMPROVE
 
-The `obuumbA-os/` app now includes:
+The `obuumbA-os/` app includes:
 - Persistent local JSON task/request/audit storage
 - Universal request classification and basic requirement extraction
 - Task creation, execution, verification and owner escalation
@@ -60,8 +76,10 @@ The portable local core is the fallback. The next production integrations are:
 8. Production hosting/domain
 9. End-to-end pilot testing
 
-See `docs/AUTOPILOT_SPEC.md`, `docs/OWNER_ACTIONS.md`, `docs/API_CONTRACT.md`, and `docs/TEST_PLAN.md`.
+See `docs/AUTOPILOT_SPEC.md`, `docs/OWNER_ACTIONS.md`, `docs/API_CONTRACT.md`, `docs/TEST_PLAN.md` and `docs/SECURITY.md`.
 
 ## Security baseline
 
 The server binds to localhost by default. Non-health API routes can be protected with `ADMIN_API_TOKEN`; production mode denies protected API access if that secret is missing. See [docs/SECURITY.md](docs/SECURITY.md) before exposing the service to a network.
+
+The master security and supply-chain policy is documented in [docs/O_BUUMBA_ONE_MASTER_PLAN.md](docs/O_BUUMBA_ONE_MASTER_PLAN.md).
