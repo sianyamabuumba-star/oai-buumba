@@ -39,8 +39,12 @@ export function normalizeSourceUrl(value) {
   return parsed.toString();
 }
 
-export function createSourceRecord(input = {}, now = new Date()) {
-  const ownerId = boundedString(input.ownerId, "ownerId", 128, true);
+export function createSourceRecord(input = {}, context = {}) {
+  if (Object.hasOwn(input, "ownerId")) {
+    throw new TypeError("ownerId must come from authenticated server context, not source input");
+  }
+  const ownerId = boundedString(context.ownerId, "ownerId", 128, true);
+  const now = context.now ?? new Date();
   const kind = boundedString(input.kind, "kind", 16, true).toUpperCase();
   if (!SOURCE_KINDS.includes(kind)) throw new TypeError("kind must be URL, TEXT or FILE");
 
