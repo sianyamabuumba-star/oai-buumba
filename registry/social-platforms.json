@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "status": "catalogue_seed_unverified",
+  "policy": "A listed platform is not connected. Verify official API docs, country availability, account eligibility, scopes, limits and terms before implementation.",
+  "platforms": [
+    {
+      "id": "instagram",
+      "name": "Instagram",
+      "owner": "Meta",
+      "category": "social_visual",
+      "official": "https://developers.facebook.com/docs/instagram-platform/",
+      "operations": [
+        "read_public_business_media_where_permitted",
+        "publish_supported_media_for_eligible_professional_accounts"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "facebook-pages",
+      "name": "Facebook Pages",
+      "owner": "Meta",
+      "category": "social_network",
+      "official": "https://developers.facebook.com/docs/pages/",
+      "operations": [
+        "read_page_data_with_permission",
+        "publish_page_content_with_permission"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "messenger",
+      "name": "Messenger",
+      "owner": "Meta",
+      "category": "messaging",
+      "official": "https://developers.facebook.com/docs/messenger-platform/",
+      "operations": [
+        "manage_page_messaging_with_permission"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "whatsapp-business",
+      "name": "WhatsApp Business Platform",
+      "owner": "Meta",
+      "category": "messaging",
+      "official": "https://developers.facebook.com/docs/whatsapp/",
+      "operations": [
+        "business_messaging_templates_and_webhooks_subject_to_policy"
+      ],
+      "connection": "official_business_platform",
+      "executionDefault": "off"
+    },
+    {
+      "id": "threads",
+      "name": "Threads",
+      "owner": "Meta",
+      "category": "social_network",
+      "official": "https://developers.facebook.com/docs/threads/",
+      "operations": [
+        "supported_read_and_publish_operations_subject_to_permissions"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "tiktok",
+      "name": "TikTok",
+      "owner": "TikTok",
+      "category": "short_video",
+      "official": "https://developers.tiktok.com/",
+      "operations": [
+        "login_and_authorised_content_operations_subject_to_review"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube",
+      "owner": "Google",
+      "category": "video",
+      "official": "https://developers.google.com/youtube/v3",
+      "operations": [
+        "read_channel_video_data_with_permission",
+        "upload_video_with_authorised_scope_and_quota"
+      ],
+      "connection": "google_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "linkedin",
+      "name": "LinkedIn",
+      "owner": "LinkedIn",
+      "category": "professional",
+      "official": "https://learn.microsoft.com/en-us/linkedin/",
+      "operations": [
+        "approved_products_and_scopes_only"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "pinterest",
+      "name": "Pinterest",
+      "owner": "Pinterest",
+      "category": "visual_discovery",
+      "official": "https://developers.pinterest.com/",
+      "operations": [
+        "supported_pin_and_account_operations_subject_to_access"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "snapchat",
+      "name": "Snapchat",
+      "owner": "Snap",
+      "category": "social_visual",
+      "official": "https://developers.snap.com/",
+      "operations": [
+        "approved_public_api_capabilities_only"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "x",
+      "name": "X",
+      "owner": "X",
+      "category": "microblogging",
+      "official": "https://developer.x.com/en/docs",
+      "operations": [
+        "read_and_write_subject_to_api_tier_and_permissions"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "reddit",
+      "name": "Reddit",
+      "owner": "Reddit",
+      "category": "community",
+      "official": "https://www.reddit.com/dev/api/",
+      "operations": [
+        "read_and_write_subject_to_api_terms"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "discord",
+      "name": "Discord",
+      "owner": "Discord",
+      "category": "community",
+      "official": "https://discord.com/developers/docs/intro",
+      "operations": [
+        "bot_and_authorised_user_operations_subject_to_scopes"
+      ],
+      "connection": "official_oauth_bot",
+      "executionDefault": "off"
+    },
+    {
+      "id": "telegram",
+      "name": "Telegram",
+      "owner": "Telegram",
+      "category": "messaging_community",
+      "official": "https://core.telegram.org/bots/api",
+      "operations": [
+        "bot_operations_in_authorised_chats"
+      ],
+      "connection": "official_bot_api",
+      "executionDefault": "off"
+    },
+    {
+      "id": "twitch",
+      "name": "Twitch",
+      "owner": "Twitch",
+      "category": "live_streaming",
+      "official": "https://dev.twitch.tv/docs/",
+      "operations": [
+        "supported_channel_and_stream_operations"
+      ],
+      "connection": "official_oauth_api",
+      "executionDefault": "off"
+    }
+  ]
+}
