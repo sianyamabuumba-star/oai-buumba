@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Runtime customer and operational data
+/obuumbA-os/data/runtime/
+/.obuumba-runtime/
+
+# Logs and local editor/OS files
+*.log
+.DS_Store
