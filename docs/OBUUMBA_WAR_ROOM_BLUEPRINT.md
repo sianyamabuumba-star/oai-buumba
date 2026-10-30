@@ -183,3 +183,18 @@ The War Room is not production-ready until users can find every business/product
 
 ## First practical operating focus
 Use O'BUUMBA Studio's design service as the first complete product-to-sale workflow. Test the journey from customer brief to follow-up before expanding the same template to other divisions.
+
+
+## Shared implementation registries and lifecycle schema
+
+The first shared data foundation is now represented by:
+- `registry/business-units.json` — proposed business units and six revenue tracks, explicitly separated from legal-entity status.
+- `registry/ai-models.json` — AI assistants and research platforms with capability and connection-status fields.
+- `registry/automation-and-business-tools.json` — automation, forms, analytics, creative, development and backend tool candidates.
+- `registry/creative-tools.json` — creative production catalogue.
+- `registry/social-platforms.json` — social and messaging platform catalogue.
+- `registry/sales-channels.json` — sales-channel candidates and country/payout/age verification gates.
+- `schemas/offering.schema.json` — common data contract for products, services, software, creative IP, evaluation work and internal initiatives.
+- `docs/UNIVERSAL_PRODUCT_SERVICE_LIFECYCLE.md` — stage definitions, exit evidence and commercial/governance controls.
+
+These files are a catalogue and data-model foundation. They do not indicate that every listed platform is eligible, connected, paid, legally approved or operational. Tool terms and availability require dated verification before activation.
