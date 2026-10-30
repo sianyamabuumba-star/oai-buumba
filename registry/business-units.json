@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "operating_model_proposal_not_legal_entity_verification",
+  "brand": "O'BUUMBA",
+  "workspace": "O'BUUMBA WAR ROOM",
+  "principles": ["Create", "Uplift", "Cockieness"],
+  "policy": "Business units and revenue tracks are operating categories, not proof of separate legal entities, registration, active trading, client contracts or revenue.",
+  "businessUnits": [
+    {"id":"obuumba-studio","name":"O'BUUMBA Studio","type":"creative_services","purpose":"Graphic design, branding, promotional posters, print-ready artwork and visual communication","priority":"first_vertical_slice"},
+    {"id":"obuumba-digital","name":"O'BUUMBA Digital","type":"digital_services","purpose":"Websites, digital experiences, document formatting and web design","priority":"phase_two"},
+    {"id":"obuumba-technologies","name":"O'BUUMBA Technologies","type":"technology","purpose":"AI workflows, automation, software, internal tools and innovation","priority":"phase_two"},
+    {"id":"obuumba-media","name":"O'BUUMBA Media","type":"media","purpose":"Photography, video, content, marketing and storytelling","priority":"phase_two"},
+    {"id":"obuumba-music","name":"O'BUUMBA Music","type":"creative_ip","purpose":"Music, sound, recording and original creative releases","priority":"phase_two"},
+    {"id":"obuumba-business","name":"O'BUUMBA Business","type":"business_support","purpose":"Business documents, presentations, research and operational support","priority":"phase_two"},
+    {"id":"obuumba-products","name":"O'BUUMBA Products","type":"digital_products","purpose":"Templates, creative assets, downloadable products and software products","priority":"phase_two"},
+    {"id":"obuumba-impact","name":"O'BUUMBA Impact","type":"community_initiatives","purpose":"Community, education and social-impact initiatives","priority":"future"},
+    {"id":"obuumba-salon","name":"O'BUUMBA Salon","type":"personal_care_concept","purpose":"Beauty, grooming and personal-care services where properly established","priority":"future","status":"concept_requires_operational_validation"}
+  ],
+  "revenueTracks": [
+    {"id":"ai-evaluation","name":"AI training and evaluation","unit":"obuumba-technologies","activities":["model response evaluation","prompt and rubric testing","red-team testing in authorised environments","code and content review"],"status":"opportunity_research","eligibilityGate":"Verify platform age, country, contract, identity and payout requirements; do not bypass restrictions."},
+    {"id":"b2b-agency","name":"B2B agency and freelance services","unit":"obuumba-studio","activities":["design services","branding","marketing assets","presentations","web and document services"],"status":"service_development"},
+    {"id":"digital-products","name":"Digital products and templates","unit":"obuumba-products","activities":["Canva templates","Notion systems","documents","design packs","downloadable assets"],"status":"product_development"},
+    {"id":"faceless-media","name":"Media and video publishing","unit":"obuumba-media","activities":["original scripts","short-form video","voice and audio production","content series"],"status":"concept_and_experimentation"},
+    {"id":"sales-automation","name":"Sales enablement and automation","unit":"obuumba-business","activities":["sales decks","lead workflows","CRM setup","approved follow-up systems"],"status":"service_development"},
+    {"id":"micro-saas","name":"Web apps and micro-SaaS","unit":"obuumba-technologies","activities":["web utilities","internal tools","software prototypes","validated SaaS products"],"status":"research_and_prototyping"}
+  ],
+  "legalAndCommercialGuardrails": {
+    "legalEntityStatus":"unverified",
+    "rule":"Do not represent O'BUUMBA Ltd as registered or authorised to contract until official records and authority are verified.",
+    "financialAuthority":"Contracts, banking, tax, payout and financial commitments require the legally eligible account holder or authorised adult representative where applicable.",
+    "ipOwnership":"Record authorship, third-party assets, licences, tool terms, client agreements and human contributions; do not assume every AI output is exclusive company IP."
+  }
+}
