@@ -88,4 +88,18 @@ const stopped=await runTask(taskStore,audit,adapters,blocked);
 assert.equal(stopped.status,"NEEDS_OWNER");
 assert.equal((await taskStore.all()).length,2);
 assert.ok((await auditStore.all()).length>=4);
+
+process.env.NODE_ENV="test";
+const {app}=await import("../server.js");
+const httpServer=app.listen(0,"127.0.0.1");
+try {
+  const port=httpServer.address().port;
+  const privateResponse=await fetch(`http://127.0.0.1:${port}/data/runtime/requests.json`);
+  assert.equal(privateResponse.status,404);
+  const demoResponse=await fetch(`http://127.0.0.1:${port}/data/providers.json`);
+  assert.equal(demoResponse.status,200);
+} finally {
+  await new Promise((resolve,reject)=>httpServer.close(error=>error?reject(error):resolve()));
+}
+
 console.log("O'BUUMBA OS self-test: PASS");
