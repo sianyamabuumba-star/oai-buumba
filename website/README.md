@@ -13,7 +13,7 @@ A mobile-first static website for the O'BUUMBA Creative studio.
 
 - Static HTML, CSS and a small amount of vanilla JavaScript.
 - No paid dependencies, tracking scripts, cookies, database or backend.
-- WhatsApp and email are the enquiry routes.
+- Email is the current enquiry route. A dedicated business contact channel can be added after it is set up safely.
 - Portfolio tiles are explicitly labelled concept/service previews.
 - No domain, hosting provider or live deployment has been configured.
 
@@ -35,7 +35,8 @@ Then open `http://127.0.0.1:8000`.
 4. Test on an Android phone and desktop at narrow and wide widths.
 5. Confirm WhatsApp and email links open correctly.
 6. Choose and configure a hosting target; deployment is not enabled by this branch.
-7. Keep private operating-system files, customer data and credentials outside the public site.
+7. Do not publish a personal phone number. Add a dedicated business contact channel only when it is ready and appropriately managed.
+8. Keep private operating-system files, customer data and credentials outside the public site.
 
 ## Brand direction
 
