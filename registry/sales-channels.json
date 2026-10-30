@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "status": "candidate_channels_unverified",
+  "policy": "A channel listing is not an endorsement or proof that a seller in Zambia can receive payouts. Verify official seller eligibility, country, age, fees, payment rails, refunds, taxes and terms before use. No account creation or contract acceptance for a minor.",
+  "fieldsToVerify": [
+    "seller_country_support",
+    "age_and_guardian_rules",
+    "payout_method_and_country",
+    "payment_processor_supported_in_zambia",
+    "listing_and_transaction_fees",
+    "currency_and_conversion",
+    "refund_and_chargeback_rules",
+    "digital_delivery_support",
+    "physical_shipping_support",
+    "tax_obligations",
+    "commercial_rights",
+    "last_verified_at"
+  ],
+  "channels": [
+    {
+      "id": "direct-social",
+      "name": "Direct social selling",
+      "kind": "customer_discovery_and_enquiry",
+      "channels": [
+        "Facebook Page",
+        "Instagram professional profile",
+        "WhatsApp Business",
+        "TikTok",
+        "YouTube",
+        "Pinterest"
+      ],
+      "url": "https://www.facebook.com/business/",
+      "status": "research_and_manual_sales_first",
+      "note": "Use approved platform features and honest product descriptions; take orders through a verified, suitable payment method."
+    },
+    {
+      "id": "shopify",
+      "name": "Shopify",
+      "kind": "online_store",
+      "url": "https://www.shopify.com/",
+      "status": "evaluate_cost_and_zambia_payment_gateways",
+      "note": "Subscription and payment processor costs; do not assume Shopify Payments is available in Zambia."
+    },
+    {
+      "id": "woocommerce",
+      "name": "WooCommerce",
+      "kind": "self_hosted_store",
+      "url": "https://woocommerce.com/",
+      "status": "candidate",
+      "note": "Core plugin is free; hosting, domain, extensions and payment gateway may cost."
+    },
+    {
+      "id": "payhip",
+      "name": "Payhip",
+      "kind": "digital_products",
+      "url": "https://payhip.com/",
+      "status": "payment_processor_country_check_required",
+      "note": "Requires a supported payment processor; official help lists multiple processors, availability varies by country."
+    },
+    {
+      "id": "gumroad",
+      "name": "Gumroad",
+      "kind": "digital_products",
+      "url": "https://gumroad.com/",
+      "status": "zambia_payout_warning",
+      "note": "Official payout help currently states Zambia creators cannot receive payouts through its listed local bank/PayPal routes. Do not build a sales plan around it without a verified lawful payout route."
+    },
+    {
+      "id": "kofi",
+      "name": "Ko-fi Shop",
+      "kind": "digital_and_physical_products",
+      "url": "https://ko-fi.com/",
+      "status": "payment_processor_country_check_required",
+      "note": "Official help says payouts go directly to PayPal or Stripe; check whether either can lawfully receive funds in the seller's country."
+    },
+    {
+      "id": "etsy",
+      "name": "Etsy",
+      "kind": "creative_marketplace",
+      "url": "https://www.etsy.com/sell",
+      "status": "seller_country_and_age_check_required",
+      "note": "Check Etsy Payments country eligibility and seller age rules before considering."
+    },
+    {
+      "id": "fiverr",
+      "name": "Fiverr",
+      "kind": "services_marketplace",
+      "url": "https://www.fiverr.com/",
+      "status": "age_and_payout_check_required",
+      "note": "Marketplace age rules and payout eligibility must be checked; no bypassing age requirements."
+    },
+    {
+      "id": "upwork",
+      "name": "Upwork",
+      "kind": "services_marketplace",
+      "url": "https://www.upwork.com/",
+      "status": "age_and_payout_check_required",
+      "note": "Check minimum age, country and payout rules; no bypassing eligibility."
+    },
+    {
+      "id": "facebook-marketplace",
+      "name": "Facebook Marketplace",
+      "kind": "local_physical_goods",
+      "url": "https://www.facebook.com/marketplace/",
+      "status": "regional_feature_and_age_check_required",
+      "note": "Availability, checkout and selling features vary by country; use local safe arrangements with appropriate adult oversight."
+    }
+  ],
+  "priority": "Prioritise direct service sales and locally deliverable design work first; only add a storefront after confirming an actual payout path and legal eligibility."
+}
