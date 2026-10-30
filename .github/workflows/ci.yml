@@ -42,6 +42,7 @@ jobs:
       - name: Run self-test
         run: npm test
 
+  # Keep the public website checks dependency-free and separate from OS tests.
   website-check:
     name: Static website checks
     runs-on: ubuntu-latest
