@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Private runtime data and local state
+.obuumba-os-runtime/
+obuumbA-os/data/runtime/
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs and temporary files
+*.log
+npm-debug.log*
+.DS_Store
