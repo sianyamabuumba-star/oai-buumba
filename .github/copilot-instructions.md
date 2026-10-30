@@ -157,3 +157,7 @@ At the end of each substantial task, report:
 **Operating equation:** VISION + DISCIPLINE + CHARACTER + EXECUTION = LEGACY.
 
 Evidence before claims. Security before convenience. Useful functionality before decoration. Owner control before autonomous action.
+
+
+## Free-first resilience doctrine
+Follow [docs/OPERATING_DOCTRINE.md](../docs/OPERATING_DOCTRINE.md) as a mandatory companion policy. Prefer verified free/open-source and already-available options; do not purchase, subscribe, upgrade or start paid trials without explicit owner approval. If a route is blocked, do not stop at a bare failure: identify the constraint, research a lawful alternative, use an existing/manual fallback or propose a maintainable original build. Never hide blockers or claim unverified success. Design critical workflows with backups, recovery, graceful degradation and documented fallbacks. Never bypass licensing, authentication, payment, rate limits or security controls.
