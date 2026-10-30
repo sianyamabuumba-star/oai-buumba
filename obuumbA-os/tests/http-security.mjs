@@ -56,7 +56,7 @@ try{
   const demo=await publicProviders.json();
   assert.ok(Array.isArray(demo)&&demo.every(p=>p.verified===false),"public provider list contains only unverified demo entries");
 
-  for(const filePath of ["/server.js","/core/auth.js","/data/providers.json","/data/runtime/requests.json","/package.json"]){
+  for(const filePath of ["/server.js","/core/auth.js","/data/providers.json","/data/runtime/requests.json","/data%2Fruntime%2Frequests.json","/package.json"]){
     const response=await fetch(running.baseUrl+filePath);
     assert.equal(response.status,404,"private source/data path must not be public: "+filePath);
   }
