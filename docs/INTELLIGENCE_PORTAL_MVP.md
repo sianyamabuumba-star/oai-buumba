@@ -3,6 +3,10 @@
 ## Purpose
 This milestone introduces a polished, responsive portal foundation inside the existing repository. It begins the single-workspace experience: source capture, a local knowledge list, tool/skill category map, workflow catalogue and honest integration status.
 
+## Engineering contract
+
+The secure source-ingestion requirements, source-record model, processing lifecycle, SSRF controls, privacy requirements and first-release acceptance criteria are defined in [KNOWLEDGE_INGESTION_DESIGN.md](KNOWLEDGE_INGESTION_DESIGN.md). Treat that document as the implementation contract for the next milestone.
+
 ## Current implementation
 - `portal/index.html` is a self-contained static interface with no third-party runtime dependencies.
 - Users can save public HTTP/HTTPS source links, add a title/type/notes, search, remove, and export their source list as JSON.
