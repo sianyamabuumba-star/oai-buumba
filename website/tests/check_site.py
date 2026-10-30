@@ -18,6 +18,7 @@ class SiteAudit(HTMLParser):
         self.description_seen = False
         self.viewport_seen = False
         self.title_text = []
+        self.title_open = False
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -41,14 +42,19 @@ class SiteAudit(HTMLParser):
 
         if tag == "title":
             self.title_seen = True
+            self.title_open = True
         if tag == "meta":
             if a.get("name") == "description" and a.get("content"):
                 self.description_seen = True
             if a.get("name") == "viewport":
                 self.viewport_seen = True
 
+    def handle_endtag(self, tag):
+        if tag == "title":
+            self.title_open = False
+
     def handle_data(self, data):
-        if self.title_seen:
+        if self.title_open:
             self.title_text.append(data.strip())
 
 def main():
@@ -76,7 +82,7 @@ def main():
     if not audit.viewport_seen:
         errors.append("A mobile viewport meta tag is required")
     for required in ("https://wa.me/260776745837", "mailto:sianyamabuumba@gmail.com",
-                     "Livingstone, Zambia", "Create. Uplift. Cockieness."):
+                     "Livingstone, Zambia", "CREATE. UPLIFT. COCKIENESS."):
         if required not in html:
             errors.append("Required public content/link missing: " + required)
 
