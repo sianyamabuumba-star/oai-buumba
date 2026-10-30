@@ -20,15 +20,29 @@ import {verifyWebhookSignature,normalizeInbound,buildOutboundPayload,webhookChal
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const app=express();
+const publicDir=path.join(__dirname,"public");
+const dataDir=path.resolve(process.env.DATA_DIR || path.join(path.dirname(__dirname),".obuumba-os-runtime"));
+const relativeDataPath=path.relative(publicDir,dataDir);
+if(relativeDataPath==="" || (!relativeDataPath.startsWith(".."+path.sep) && relativeDataPath!==".." && !path.isAbsolute(relativeDataPath))) {
+  throw new Error("DATA_DIR must be outside the public directory");
+}
+app.use((req,res,next)=>{
+  res.set("X-Content-Type-Options","nosniff");
+  res.set("X-Frame-Options","DENY");
+  res.set("Referrer-Policy","strict-origin-when-cross-origin");
+  res.set("Permissions-Policy","camera=(), microphone=(), geolocation=()");
+  res.set("Cross-Origin-Resource-Policy","same-origin");
+  next();
+});
+app.use("/api",(req,res,next)=>{res.set("Cache-Control","no-store");next()});
 app.use(express.json({
   limit:"64kb",
   verify(req,res,buf){
     if(req.method==="POST" && req.originalUrl==="/webhooks/whatsapp") req.rawBody=Buffer.from(buf);
   }
 }));
-app.use(express.static(__dirname));
+app.use(express.static(publicDir,{dotfiles:"deny",index:"index.html"}));
 
-const dataDir=path.join(__dirname,"data","runtime");
 const requestStore=new JsonStore(path.join(dataDir,"requests.json"));
 const taskStore=new JsonStore(path.join(dataDir,"tasks.json"));
 const auditStore=new JsonStore(path.join(dataDir,"audit.json"));
@@ -78,6 +92,10 @@ app.post("/webhooks/whatsapp",async(req,res)=>{
     }
   }
   res.sendStatus(200);
+});
+app.get("/public/providers",async(req,res)=>{
+  res.set("Cache-Control","no-store");
+  res.json(await providers());
 });
 app.get("/api/health",async(req,res)=>{
   res.json({ok:true,service:"O'BUUMBA OS",mode:"MVP+",persistence:"local-json",time:new Date().toISOString()});
