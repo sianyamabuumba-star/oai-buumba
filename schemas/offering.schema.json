@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://obuuma.example/schemas/offering.schema.json",
+  "$id": "urn:obuuma:schema:offering:v1",
   "title": "O'BUUMBA Universal Offering Record",
   "description": "Shared record for services, physical and digital products, software, creative IP, consulting, evaluation work and internal initiatives. Replace the example schema host before publishing.",
   "type": "object",
