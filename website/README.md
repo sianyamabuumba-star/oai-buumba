@@ -44,3 +44,32 @@ Then open `http://127.0.0.1:8000`.
 - Voice: clear, confident, useful and grounded.
 - Brand line: **Create. Uplift. Cockieness.**
 - Positioning: **From Livingstone to the world.**
+
+## Cloudflare Pages deployment
+
+The production deployment workflow is `.github/workflows/deploy-cloudflare-pages.yml`.
+It publishes the static `website/` directory only after the dependency-free
+website validation job succeeds.
+
+Before the first deployment, a repository administrator must:
+
+1. Create a Cloudflare Pages project using **Direct Upload**, named
+   `obuumba-creative` (or use the exact project name configured below).
+2. Create a Cloudflare API token restricted to the relevant account with
+   **Cloudflare Pages: Edit** permission. Do not use a Global API Key.
+3. In GitHub, open **Settings → Secrets and variables → Actions** and add:
+   - Secret `CLOUDFLARE_ACCOUNT_ID`: the Cloudflare account ID.
+   - Secret `CLOUDFLARE_API_TOKEN`: the restricted Pages API token.
+   - Repository variable `CLOUDFLARE_PAGES_PROJECT`: the exact Pages project
+     name (default recommendation: `obuumba-creative`).
+4. Push an approved website change to `main`, or run the workflow manually
+   from the `main` branch.
+
+The workflow uses a SHA-pinned checkout action and an exact Wrangler version.
+It does not store credentials in the repository. Never paste API tokens into
+issues, commits, source files or chat messages.
+
+A successful GitHub workflow run confirms deployment. The resulting
+`*.pages.dev` address is supplied by Cloudflare; add a custom domain only
+after the site has been reviewed and the domain is controlled by the project
+owner. No domain purchase is required for the initial Pages URL.
